@@ -1,0 +1,71 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
+		<title>THREE.JS Example</title>
+		<style type="text/css"> 
+			body {
+				color: #808080;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #ffffff;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+			}
+			
+			#panel {
+				position: absolute;
+				top: 50px;
+			}
+			
+			#slider-horizontal {
+				width: 100px;
+			}
+			
+			#slider-vertical {
+				height: 150px;
+			}
+                </style>
+		<script type="text/javascript" src="js/Three.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/refineMesh.js"></script>
+		<script type="text/javascript" src="js/loadBaseMesh.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+		<script type="text/javascript" src="js/range.js"></script>
+		<script type="text/javascript" src="js/slider.js"></script>
+		<script type="text/javascript" src="js/timer.js"></script>
+		<link rel="StyleSheet" type="text/css" href="css/bluecurve.css" />
+	</head>
+	<body>
+<body>
+	<div id="panel">
+	<table><tr><td>
+		<div class="slider" id="slider-vertical" tabIndex="1">
+			<input class="slider-input" id="slider-vertical-input" name="slider-vertical-input" />
+		</div></td><td>
+		<button onclick="Home(); return false;">Home View</button><br />
+		<button onclick="Inertia(); return false;">Trigger Inertia</button><br />
+		<button onclick="changeMesh(); return false;">Change Mesh</button>
+		</td></tr>
+		<tr><td></td><td>
+		<div class="slider" id="slider-horizontal" tabIndex="1">
+			<input class="slider-input" id="slider-horizontal-input" name="slider-horizontal-input" />
+		</div>
+		</td></tr>
+	</div>
+	<!--<form>
+	slowRotationX: <input type="text" id="slowRotationX">
+	slowRotationY: <input type="text" id="slowRotationY">
+	targetRotationX: <input type="text" id="targetRotationX">
+	targetRotationY: <input type="text" id="targetRotationY">
+	</form>-->
+	<script type="text/javascript" src="js/presentation.js"></script>
+	</body>
+</html>
