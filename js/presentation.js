@@ -98,6 +98,7 @@ function init() {
 	renderer.domElement.addEventListener('mousewheel', onMouseScroll, false);
 	renderer.domElement.addEventListener('touchstart', onTouchStart, false);
 	renderer.domElement.addEventListener('touchmove', onTouchMove, false);
+	renderer.domElement.addEventListener('touchend', onTouchEnd, false);
 	document.addEventListener('keydown', onKeyDown, false);
 
 }
@@ -123,10 +124,10 @@ function setParameters() {
 		camera.position.x = startX = box.x[0] + (box.x[1]-box.x[0])/2;
 		camera.position.y = startY = box.y[0] + (box.y[1]-box.y[0])/2;
 		
-		vslider.setMinimum(maxDimension);
-		vslider.setMaximum(maxDimension*3);
-		vslider.setValue(maxDimension*2);
-		
+		vslider.setMinimum(-maxDimension);
+		vslider.setMaximum(maxDimension*1.5);
+		vslider.setValue(maxDimension*0.25);
+
 		hslider.setMinimum(startX - maxDimension*2);
 		hslider.setMaximum(startX + maxDimension*2);
 		hslider.setValue(0);
@@ -248,7 +249,7 @@ function onMouseScroll(event) {
 function onSliderChange() {
 	
 	if(this.getOrientation() == "vertical")
-		camera.position.z = this.getValue();
+		camera.position.z = maxDimension*2 - this.getValue();
 	else
 		camera.position.x = -this.getValue();
 }
@@ -256,7 +257,8 @@ function onSliderChange() {
 function onTouchStart(event) {
 	
 	event = event ? event: document.event;
-	 
+	mesh.doubleSided = false;
+	mesh.material.wireframe = true;
 	event.preventDefault();
 	if(event.touches.length == 1) {
 		mouseDownY = event.touches[0].pageY - windowHalfY;
@@ -280,6 +282,15 @@ function onTouchMove(event) {
 	
 }
 
+function onTouchEnd(event) {
+	
+	event = event ? event: document.event;
+	
+	event.preventDefault();
+	mesh.doubleSided = true;
+	mesh.material.wireframe = false;
+}
+
 function Inertia() {
 	
 	if(noinertia) {
@@ -299,7 +310,7 @@ function Home() {
 
 	targetRotationX = targetRotationY = mouseDownRotationX = mouseDownRotationY = mouseDownX = mouseDownY = mouseX = mouseY = slowRotationX = slowRotationY = 0;
 	mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
-	vslider.setValue(maxDimension*2);
+	vslider.setValue(maxDimension*0.25);
 	hslider.setValue(startX);
 	home = 1;
 	
@@ -319,7 +330,7 @@ function onKeyDown(event) {
 	
 	event = event ? event : document.event;
 	if(event.keyCode == 37)
-		hslider.setValue(hslider.getValue() - 0.05 * (vslider.getMaximum() - vslider.getMinimum()));
+		hslider.setValue(hslider.getValue() - 0.05 * (hslider.getMaximum() - hslider.getMinimum()));
 	else if(event.keyCode == 39)
-		hslider.setValue(hslider.getValue() + 0.05 * (vslider.getMaximum() - vslider.getMinimum()));
+		hslider.setValue(hslider.getValue() + 0.05 * (hslider.getMaximum() - hslider.getMinimum()));
 }
