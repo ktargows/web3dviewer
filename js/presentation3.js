@@ -19,9 +19,6 @@ home,
 maxDimension,
 stats,
 vslider,
-hslider,
-startX,
-startY,
 
 //Renderer
 WIDTH = window.innerWidth,
@@ -50,7 +47,6 @@ function isWebGLSupported() {
 	} catch( e ) { 
 		return 0;
 	}
-	//alert("moglem uzyc webgl");
 	return 1;
 }
 
@@ -88,10 +84,8 @@ function init() {
 	document.body.appendChild( renderer.domElement );
 	
 	vslider = new Slider(document.getElementById("slider-vertical"), document.getElementById("slider-vertical-input"), "vertical");
-	hslider = new Slider(document.getElementById("slider-horizontal"), document.getElementById("slider-horizontal-input"));
 	
 	vslider.onchange = onSliderChange;
-	hslider.onchange = onSliderChange;
 	
 	renderer.domElement.addEventListener('mousedown', onMouseDown, false);
 	renderer.domElement.addEventListener('DOMMouseScroll', onMouseScroll, false);
@@ -99,10 +93,17 @@ function init() {
 	renderer.domElement.addEventListener('touchstart', onTouchStart, false);
 	renderer.domElement.addEventListener('touchmove', onTouchMove, false);
 	renderer.domElement.addEventListener('touchend', onTouchEnd, false);
-	document.addEventListener('keydown', onKeyDown, false);
+	renderer.domElement.addEventListener('contextmenu', onContextMenu, false);
 
 }
- 
+
+function onContextMenu(event) {
+	
+	event = event ? event : document.event;
+	
+	event.preventDefault();
+	return false;
+}
 function loadMesh() {
 	
 	loader = new THREE.JSONLoader();
@@ -121,17 +122,13 @@ function setParameters() {
 		maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
 		maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
 		camera.position.z = maxDimension*2;
-		camera.position.x = startX = box.x[0] + (box.x[1]-box.x[0])/2;
-		camera.position.y = startY = box.y[0] + (box.y[1]-box.y[0])/2;
+		camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
+		camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
 		
 		vslider.setMinimum(-maxDimension);
 		vslider.setMaximum(maxDimension*1.5);
 		vslider.setValue(maxDimension*0.25);
-		
-		hslider.setMinimum(startX - maxDimension*2);
-		hslider.setMaximum(startX + maxDimension*2);
-		hslider.setValue(0);
-		
+	
 		scene.add(mesh);
 }
 
@@ -190,8 +187,11 @@ function onMouseDown(event) {
 	
 	mouseDownY -= windowHalfY;
 	mouseDownX -= windowHalfX;
-	mouseDownRotationX = targetRotationX;
-	mouseDownRotationY = targetRotationY;
+	
+	if(event.which == 1) {
+		mouseDownRotationX = targetRotationX;
+		mouseDownRotationY = targetRotationY;
+	}
 }
 
 function onMouseMove(event) {
@@ -211,15 +211,23 @@ function onMouseMove(event) {
 	
 	mouseX -= windowHalfX;
 	mouseY -= windowHalfY;
-	if(noinertia) {
-		targetRotationX = (mouseX - mouseDownX)*0.2;
-		targetRotationY = (mouseY - mouseDownY)*0.2;
+	if(event.which == 1) {
+		if(noinertia) {
+			targetRotationX = (mouseX - mouseDownX)*0.2;
+			targetRotationY = (mouseY - mouseDownY)*0.2;
+			mouseDownX = mouseX;
+			mouseDownY = mouseY;
+		}
+		else {
+			targetRotationX = mouseDownRotationX + (mouseX - mouseDownX)*0.02;
+			targetRotationY = mouseDownRotationY + (mouseY - mouseDownY)*0.02;
+		}
+	}
+	else if(event.which == 3) {
+		camera.position.x -= (mouseX - mouseDownX)*0.2;
+		camera.position.y += (mouseY - mouseDownY)*0.2;
 		mouseDownX = mouseX;
 		mouseDownY = mouseY;
-	}
-	else {
-		targetRotationX = mouseDownRotationX + (mouseX - mouseDownX)*0.02;
-		targetRotationY = mouseDownRotationY + (mouseY - mouseDownY)*0.02;
 	}
 }
 
@@ -248,16 +256,14 @@ function onMouseScroll(event) {
 
 function onSliderChange() {
 	
-	if(this.getOrientation() == "vertical")
-		camera.position.z = maxDimension*2 - this.getValue();
-	else
-		camera.position.x = -this.getValue();
+	camera.position.z = maxDimension*2 - this.getValue();
 }
 
 function onTouchStart(event) {
 	
 	event = event ? event: document.event;
-	 
+	mesh.doubleSided = false;
+	mesh.material.wireframe = true;
 	event.preventDefault();
 	if(event.touches.length == 1) {
 		mouseDownY = event.touches[0].pageY - windowHalfY;
@@ -310,7 +316,6 @@ function Home() {
 	targetRotationX = targetRotationY = mouseDownRotationX = mouseDownRotationY = mouseDownX = mouseDownY = mouseX = mouseY = slowRotationX = slowRotationY = 0;
 	mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
 	vslider.setValue(maxDimension*0.25);
-	hslider.setValue(startX);
 	home = 1;
 	
 }
@@ -323,13 +328,4 @@ function changeMesh() {
 		mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
 		setParameters();
 	}
-}
-
-function onKeyDown(event) {
-	
-	event = event ? event : document.event;
-	if(event.keyCode == 37)
-		hslider.setValue(hslider.getValue() - 0.05 * (hslider.getMaximum() - hslider.getMinimum()));
-	else if(event.keyCode == 39)
-		hslider.setValue(hslider.getValue() + 0.05 * (hslider.getMaximum() - hslider.getMinimum()));
 }
