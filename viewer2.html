@@ -25,7 +25,7 @@
 			}
 			
 			#slider-vertical {
-				height: 150px;
+				height: 180px;
 			}
                 </style>
 		<script type="text/javascript" src="js/Three.js"></script>
@@ -42,10 +42,25 @@
 	<body>
 <body>
 	<div id="panel">
-	<table><tr><td>
-		<div class="slider" id="slider-vertical" tabIndex="1">
-			<input class="slider-input" id="slider-vertical-input" name="slider-vertical-input" />
-		</div></td><td>
+	<table>
+		<tr>
+			<td><div class="slider" id="slider-vertical" tabIndex="1">
+				<input class="slider-input" id="slider-vertical-input" name="slider-vertical-input" />
+			</div></td>
+			<td><table><tr>
+					<td></td>
+					<td><button onclick="moveCamera('up'); return false;">&uarr;</button></td>
+					<td></td>
+					</tr><tr>
+					<td><button onclick="moveCamera('left'); return false;">&larr;</button></td>
+					<td></td>
+					<td><button onclick="moveCamera('right'); return false;">&rarr;</button></td>
+					</tr><tr>
+					<td></td>
+					<td><button onclick="moveCamera('down'); return false;">&darr;</button></td>
+					</td></td>
+					</tr>	
+				</table>
 		<button onclick="Home(); return false;">Home View</button><br />
 		<button onclick="Inertia(); return false;">Trigger Inertia</button><br />
 		</td></tr>

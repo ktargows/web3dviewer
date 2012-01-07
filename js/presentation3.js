@@ -1,3 +1,5 @@
+const CAMERA_MOVE = 5;
+
 //Vars
 var mouseDownX = 0, 
 mouseDownY = 0,
@@ -316,6 +318,9 @@ function Home() {
 	targetRotationX = targetRotationY = mouseDownRotationX = mouseDownRotationY = mouseDownX = mouseDownY = mouseX = mouseY = slowRotationX = slowRotationY = 0;
 	mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
 	vslider.setValue(maxDimension*0.25);
+	var box = mesh.geometry.boundingBox;
+	camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
+	camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
 	home = 1;
 	
 }
@@ -327,5 +332,18 @@ function changeMesh() {
 	else {
 		mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
 		setParameters();
+	}
+}
+
+function moveCamera(direction) {
+	
+
+	switch(direction) {
+		
+		case "up": camera.position.y -= CAMERA_MOVE; break;
+		case "down": camera.position.y += CAMERA_MOVE; break;
+		case "left": camera.position.x += CAMERA_MOVE; break;
+		case "right": camera.position.x -= CAMERA_MOVE; break;
+		default: break;
 	}
 }
