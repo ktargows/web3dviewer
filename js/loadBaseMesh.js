@@ -11,7 +11,6 @@ function loadBaseMesh() {
 			if (http_request.status == 200) {
 
 				var json_data = http_request.responseText;
-				//alert(json_data);
 				var json = JSON.parse(json_data); 
 				var i;
 				for (i = 0; i< json.vertices.length; i++ ){ 
@@ -24,9 +23,10 @@ function loadBaseMesh() {
 				mesh.geometry.computeCentroids();
 				mesh.geometry.computeFaceNormals();
 				mesh.geometry.computeBoundingBox();
+				mesh.geometry.dynamic = true;
 				
              			// Center mesh
-/*				var offset_x = (mesh.geometry.boundingBox.x[0]+mesh.geometry.boundingBox.x[1])/2; 
+				var offset_x = (mesh.geometry.boundingBox.x[0]+mesh.geometry.boundingBox.x[1])/2; 
 				var offset_y = (mesh.geometry.boundingBox.y[0]+mesh.geometry.boundingBox.y[1])/2; 
 				var offset_z = (mesh.geometry.boundingBox.z[0]+mesh.geometry.boundingBox.z[1])/2; 
 				for (i = 0; i< json.vertices.length; i++ ){ 
@@ -34,8 +34,9 @@ function loadBaseMesh() {
 					mesh.geometry.vertices[i].position.y -= offset_y;
 					mesh.geometry.vertices[i].position.z -= offset_z;
 				}
-		*/
+		
 			setParameters();
+
 			} else {
                       		alert('Server connection error.');
 			}
