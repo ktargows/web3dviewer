@@ -47,7 +47,8 @@ loader,
 scene,
 camera,
 renderer,
-mesh;
+mesh,
+light;
 
 init();
 animate();
@@ -86,22 +87,16 @@ function init() {
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 	
-	
 	scene = new THREE.Scene();
 	scene.add(camera);
-		
 	scene.add( new THREE.AmbientLight( 0x505050, 2000 ) );
-	var light1 = new THREE.PointLight( 0x707070, 1, 2000 );
-	light1.position.x = 100;
-	light1.position.z = 30;
-	scene.add( light1 );
-	
-	var light2 = new THREE.PointLight( 0x707070, 1, 2000 );
+	light = new THREE.PointLight( 0x707070, 1, 2000 );
+	scene.add( light );
+
+	/*var light2 = new THREE.PointLight( 0x707070, 1, 2000 );
 	light2.position.x = -100;
 	light2.position.z = 30;
-	scene.add( light2 );
-	
-	
+	scene.add( light2 );	scene.add(p1); */
 	loadMesh();
 
 	document.body.appendChild( renderer.domElement );
@@ -143,14 +138,14 @@ function setParameters() {
 		if(box) {
 			maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
 			maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
-			camera.position.z = maxDimension*2;
+			camera.position.z = light.position.z = maxDimension*2;
 			camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
 			camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
 			
 			vslider.setMinimum(-maxDimension);
 			vslider.setMaximum(maxDimension*1.5);
 			vslider.setValue(maxDimension*0.25);
-		}
+		}		
 }
 
 function animate() {
