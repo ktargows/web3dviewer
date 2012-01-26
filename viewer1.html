@@ -7,11 +7,11 @@
 				color: #808080;
 				font-family:Monospace;
 				font-size:13px;
-				text-align:center;
+				/*text-align:center;*/
 
 				background-color: #ffffff;
-				margin: 0px;
-				overflow: hidden;
+				/*margin: 0px;*/
+				/*overflow: hidden;*/
 			}
 
 			#info {
@@ -21,14 +21,19 @@
 			}
 			
 			#panel {
-				position: absolute;
+				position: relative;
+				float: left;
 				top: 50px;
+				z-index: 10;
 			}
 
 			#slider-vertical {
 				height: 180px;
 			}
                 </style>
+
+
+<!--  This should be moved into Javascript function similar to github.com/mrdoob/stats.js -->
 		<script type="text/javascript" src="js/Three.js"></script>
 		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
 		<script type="text/javascript" src="js/refineMesh.js"></script>
@@ -37,11 +42,18 @@
 		<script type="text/javascript" src="js/range.js"></script>
 		<script type="text/javascript" src="js/slider.js"></script>
 		<script type="text/javascript" src="js/timer.js"></script>
+
+
 		<link rel="StyleSheet" type="text/css" href="css/bluecurve.css" />
 	</head>
 	<body>
 <body>
-	<div id="panel">
+<h1>web3dviewer</h1>
+<p>Demonstration example number 1</p>
+<div id="web3dviewer" style="position: absolute; top: 100px;">
+
+<!-- This should be moved into Javascript function similar to github.com/mrdoob/stats.js/ --> 
+	<div style="" id="panel">
 	<table>
 		<tr>
 			<td><div class="slider" id="slider-vertical" tabIndex="1">
@@ -62,11 +74,14 @@
 					</tr>	
 				</table>
 		<button onclick="Home(); return false;">Home View</button><br />
-		<button onclick="Inertia(); return false;">Trigger Inertia</button><br />
-		<button onclick="changeMesh(); return false;">Change Mesh</button>
+		<button onclick="Inertia(); return false;">Inertia</button><br />
 		</td></tr>
 	</table>
 	</div>
+
+
+</div>
 	<script type="text/javascript" src="js/presentation.js"></script>
+
 	</body>
 </html>

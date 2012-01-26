@@ -1,3 +1,6 @@
+
+// This should be moved into Javascript function/class
+
 const CAMERA_MOVE = 5;
 
 //Vars
@@ -23,8 +26,8 @@ stats,
 vslider,
 
 //Renderer
-WIDTH = window.innerWidth,
-HEIGHT = window.innerHeight,
+WIDTH = window.innerWidth*0.5,
+HEIGHT = window.innerHeight*0.8,
 
 //Camera
 VIEW_ANGLE = 60,
@@ -75,7 +78,8 @@ function init() {
 	stats = new Stats();
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.top = '0px';
-	document.body.appendChild( stats.domElement );
+	stats.domElement.style.left = '0px';
+	document.getElementById("web3dviewer").appendChild( stats.domElement );
 	
 	
 	scene = new THREE.Scene();
@@ -83,12 +87,15 @@ function init() {
 	
 	loadMesh();
 
-	document.body.appendChild( renderer.domElement );
+	document.getElementById("web3dviewer").appendChild( renderer.domElement );
 	
 	vslider = new Slider(document.getElementById("slider-vertical"), document.getElementById("slider-vertical-input"), "vertical");
 	
 	vslider.onchange = onSliderChange;
 	
+	renderer.domElement.style.position = 'absolute';
+	renderer.domElement.style.left = '0px';
+
 	renderer.domElement.addEventListener('mousedown', onMouseDown, false);
 	renderer.domElement.addEventListener('DOMMouseScroll', onMouseScroll, false);
 	renderer.domElement.addEventListener('mousewheel', onMouseScroll, false);
@@ -326,7 +333,7 @@ function Home() {
 	
 }
 
-function changeMesh() {
+function loadCube() {
 	scene.remove(mesh);
 	if(mesh.geometry.faces.length == 6)
 		loadMesh();
