@@ -1,4 +1,3 @@
-const CAMERA_MOVE = 5;
 
 //Vars
 var mouseDownX = 0, 
@@ -38,7 +37,7 @@ HEIGHT = window.innerHeight,
 //Camera
 VIEW_ANGLE = 60,
 ASPECT = WIDTH / HEIGHT,
-NEAR = 1,
+NEAR = 0.01,
 FAR = 10000,
 
 //important vars
@@ -89,8 +88,8 @@ function init() {
 	
 	scene = new THREE.Scene();
 	scene.add(camera);
-	scene.add( new THREE.AmbientLight( 0x505050, 2000 ) );
-	light = new THREE.PointLight( 0x707070, 1, 2000 );
+	scene.add( new THREE.AmbientLight( 0x505050) );
+	light = new THREE.PointLight( 0x707070, 1, 1000 );
 	scene.add( light );
 
 	/*var light2 = new THREE.PointLight( 0x707070, 1, 2000 );
@@ -135,16 +134,17 @@ function setParameters() {
 		mesh.doubleSided = true;
 		mesh.geometry.computeBoundingBox();
 		var box = mesh.geometry.boundingBox;
-		if(box) {
+		if(box) { 
 			maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
 			maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
-			camera.position.z = light.position.z = maxDimension*2;
-			camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
-			camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
-			
+			camera.position.z = maxDimension*2;
+			light.position.z = maxDimension*2;
+			centerCamera();
+
 			vslider.setMinimum(-maxDimension);
 			vslider.setMaximum(maxDimension*1.5);
 			vslider.setValue(maxDimension*0.25);
+			//alert(maxDimension);
 		}		
 }
 
@@ -256,8 +256,8 @@ function onMouseMove(event) {
 		}
 	}
 	else if(event.which == 3) {
-		camera.position.x -= (mouseX - mouseDownX)*0.2;
-		camera.position.y += (mouseY - mouseDownY)*0.2;
+		camera.position.x -= (mouseX - mouseDownX)*maxDimension/20;
+		camera.position.y += (mouseY - mouseDownY)*maxDimension/20;
 		mouseDownX = mouseX;
 		mouseDownY = mouseY;
 	}
@@ -288,10 +288,8 @@ function onMouseScroll(event) {
 
 function onSliderChange() {
 	
-	if(this.getOrientation() == "vertical")
-		camera.position.z = maxDimension*2 - this.getValue();
-	else
-		camera.position.x = -this.getValue();
+	camera.position.z = maxDimension*2 - this.getValue();
+
 }
 
 function onTouchStart(event) {
@@ -350,9 +348,7 @@ function Home() {
 	targetRotationX = targetRotationY = mouseDownRotationX = mouseDownRotationY = mouseDownX = mouseDownY = mouseX = mouseY = slowRotationX = slowRotationY = 0;
 	mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
 	vslider.setValue(maxDimension*0.25);
-	var box = mesh.geometry.boundingBox;
-	camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
-	camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
+	centerCamera();
 	home = 1;
 	
 }
@@ -372,10 +368,17 @@ function moveCamera(direction) {
 
 	switch(direction) {
 		
-		case "up": camera.position.y -= CAMERA_MOVE; break;
-		case "down": camera.position.y += CAMERA_MOVE; break;
-		case "left": camera.position.x += CAMERA_MOVE; break;
-		case "right": camera.position.x -= CAMERA_MOVE; break;
+		case "up": camera.position.y -= maxDimension/10; break;
+		case "down": camera.position.y += maxDimension/10; break;
+		case "left": camera.position.x += maxDimension/10; break;
+		case "right": camera.position.x -= maxDimension/10; break;
 		default: break;
 	}
+}
+
+function centerCamera() {
+	
+	var box = mesh.geometry.boundingBox;
+	camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
+	camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
 }
