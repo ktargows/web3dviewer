@@ -26,6 +26,13 @@ vslider,
 offset=0,
 refinestep = 10,
 loaded = false,
+time = new Date().getTime(),
+timedelay = 3000,
+timeLastRefine = new Date().getTime(),
+minfps = 1,
+fps=0,
+framescounter=0,
+progressive=false,
 
 //Renderer
 WIDTH = window.innerWidth*0.5,
@@ -43,10 +50,10 @@ loader,
 scene,
 camera,
 renderer,
-mesh;
+mesh,
+light;
 
-init();
-animate();
+
 
 function isWebGLSupported() {
 	try { 
@@ -57,8 +64,9 @@ function isWebGLSupported() {
 	return 1;
 }
 
-function init() {
+function init(prog) {
 
+	progressive = prog;
 //	if(webgl) {
 	//	renderer = new THREE.WebGLRenderer({antialias: true});
 	//	
@@ -86,6 +94,11 @@ function init() {
 	
 	scene = new THREE.Scene();
 	scene.add(camera);
+	scene.add(camera);
+	scene.add( new THREE.AmbientLight( 0x505050, 2000 ) );
+	light = new THREE.PointLight( 0x707070, 1, 2000 );
+	scene.add( light );
+
 	
 	loadMesh();
 
@@ -105,6 +118,7 @@ function init() {
 	renderer.domElement.addEventListener('touchmove', onTouchMove, false);
 	renderer.domElement.addEventListener('touchend', onTouchEnd, false);
 	renderer.domElement.addEventListener('contextmenu', onContextMenu, false);
+	
 
 }
 
@@ -117,29 +131,36 @@ function onContextMenu(event) {
 }
 function loadMesh() {
 	
-	loader = new THREE.JSONLoader();
-	loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
-		mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
-		setParameters();
-	}); 
+	if(progressive) {
+		mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
+		loadBaseMesh();
+	}
+	else {
+		loader = new THREE.JSONLoader();
+		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
+			mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
+			setParameters();
+		}); 
+	}
 	
-}
+} 
 
 function setParameters() {
 		
 		mesh.doubleSided = true;
 		mesh.geometry.computeBoundingBox();
 		var box = mesh.geometry.boundingBox;
-		maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
-		maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
-		camera.position.z = maxDimension*2;
-		camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
-		camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
-		
-		vslider.setMinimum(-maxDimension);
-		vslider.setMaximum(maxDimension*1.5);
-		vslider.setValue(maxDimension*0.25);
-	
+		if(box) {
+			maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
+			maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
+			camera.position.z = light.position.z = maxDimension*2;
+			camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
+			camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
+			
+			vslider.setMinimum(-maxDimension);
+			vslider.setMaximum(maxDimension*1.5);
+			vslider.setValue(maxDimension*0.25);
+		}
 		scene.add(mesh);
 }
 
@@ -148,6 +169,23 @@ function animate() {
 	requestAnimationFrame(animate);
 	if(mesh) {
 		rotateMesh();
+		if(progressive) {
+			
+			time = new Date().getTime();
+			if((time - timeLastRefine) > timedelay) {
+				var refine = true;
+				if( framescounter < minfps*timedelay/1000 ){
+					refine = false;
+				} 
+				if(refine && !loaded) {
+					refineMesh();
+					//setParameters();
+				}
+				timeLastRefine = time;
+				framescounter = 0;
+			}
+			framescounter++;
+		}
 	}
 	renderer.render(scene, camera);
 	stats.update();
