@@ -12,79 +12,15 @@ import tempfile
 import sys
 
 COMMON_FILES = [
-'Three.js',
-'core/Clock.js',
-'core/Color.js',
-'core/Vector2.js',
-'core/Vector3.js',
-'core/Vector4.js',
-'core/Frustum.js',
-'core/Ray.js',
-'core/Rectangle.js',
-'core/Math.js',
-'core/Matrix3.js',
-'core/Matrix4.js',
-'core/Object3D.js',
-'core/Projector.js',
-'core/Quaternion.js',
-'core/Vertex.js',
-'core/Face3.js',
-'core/Face4.js',
-'core/UV.js',
-'core/Geometry.js',
-'core/Spline.js',
-'cameras/Camera.js',
-'cameras/OrthographicCamera.js',
-'cameras/PerspectiveCamera.js',
-'lights/Light.js',
-'lights/AmbientLight.js',
-'lights/DirectionalLight.js',
-'lights/PointLight.js',
-'lights/SpotLight.js',
-'loaders/Loader.js',
-'loaders/BinaryLoader.js',
-'loaders/JSONLoader.js',
-'loaders/SceneLoader.js',
-'materials/Material.js',
-'materials/LineBasicMaterial.js',
-'materials/MeshBasicMaterial.js',
-'materials/MeshLambertMaterial.js',
-'materials/MeshPhongMaterial.js',
-'materials/MeshDepthMaterial.js',
-'materials/MeshNormalMaterial.js',
-'materials/MeshFaceMaterial.js',
-'materials/ParticleBasicMaterial.js',
-'materials/ParticleCanvasMaterial.js',
-'materials/ParticleDOMMaterial.js',
-'materials/ShaderMaterial.js',
-'textures/Texture.js',
-'textures/DataTexture.js',
-'objects/Particle.js',
-'objects/ParticleSystem.js',
-'objects/Line.js',
-'objects/Mesh.js',
-'objects/Bone.js',
-'objects/SkinnedMesh.js',
-'objects/MorphAnimMesh.js',
-'objects/Ribbon.js',
-'objects/LOD.js',
-'objects/Sprite.js',
-'scenes/Scene.js',
-'scenes/Fog.js',
-'scenes/FogExp2.js',
-'renderers/DOMRenderer.js',
-'renderers/CanvasRenderer.js',
-'renderers/SVGRenderer.js',
-'renderers/WebGLShaders.js',
-'renderers/WebGLRenderer.js',
-'renderers/WebGLRenderTarget.js',
-'renderers/WebGLRenderTargetCube.js',
-'renderers/renderables/RenderableVertex.js',
-'renderers/renderables/RenderableFace3.js',
-'renderers/renderables/RenderableFace4.js',
-'renderers/renderables/RenderableObject.js',
-'renderers/renderables/RenderableParticle.js',
-'renderers/renderables/RenderableLine.js'
+'libs/Three.js',
+'libs/range.js',
+'libs/RequestAnimationFrame.js',
+'libs/slider.js',
+'libs/Stats.js',
+'libs/timer.js',
+'presentation.js',
+'refineMesh.js',
+'loadBaseMesh.js'
 ]
 
 
@@ -117,7 +53,9 @@ def compress(text, fname_externs):
 
 	out_tuple = tempfile.mkstemp()
 
-	os.system("java -jar compiler/compiler.jar --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs externs_common.js %s --language_in=ECMASCRIPT5_STRICT --js %s --js_output_file %s" % (externs, in_tuple[1], out_tuple[1]))
+#	os.system("java -jar compiler/compiler.jar --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs externs_common.js %s --language_in=ECMASCRIPT5_STRICT --js %s --js_output_file %s" % (externs, in_tuple[1], out_tuple[1]))
+
+	os.system("java -jar compiler/compiler.jar --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs externs_common.js %s --language_in=ECMASCRIPT3 --js %s --js_output_file %s" % (externs, in_tuple[1], out_tuple[1]))
 
 	with os.fdopen(out_tuple[0], 'r') as handle:
 		compressed = handle.read()
@@ -235,7 +173,7 @@ def parse_args():
 #				buildIncludes(files, fname_inc)
 
 def main():
-	buildLib(COMMON_FILES, False, True, 'web3dviewer', False)
+	buildLib(COMMON_FILES, False, False, 'web3dviewer', False)
 
 
 if __name__ == "__main__":
