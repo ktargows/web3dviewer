@@ -1,4 +1,14 @@
-// This should be moved into Javascript function/class
+isWebGLSupported = function() {
+	try { 
+	 !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); 
+	} catch( e ) { 
+		return 0;
+	}
+	return 1;
+}
+
+
+var viewController = function() {
 
 var CAMERA_MOVE = 5;
 
@@ -54,17 +64,7 @@ mesh,
 light;
 
 
-
-function isWebGLSupported() {
-	try { 
-	 !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); 
-	} catch( e ) { 
-		return 0;
-	}
-	return 1;
-}
-
-function init(prog) {
+this.init = function(prog) {
 
 	progressive = prog;
 //	if(webgl) {
@@ -100,7 +100,7 @@ function init(prog) {
 	scene.add( light );
 
 	
-	loadMesh();
+	this.loadMesh();
 
 	document.getElementById("web3dviewer").appendChild( renderer.domElement );
 	
@@ -122,14 +122,14 @@ function init(prog) {
 
 }
 
-function onContextMenu(event) {
+this.onContextMenu = function(event) {
 	
 	event = event ? event : document.event;
 	
 	event.preventDefault();
 	return false;
 }
-function loadMesh() {
+this.loadMesh = function() {
 	
 	if(progressive) {
 		mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
@@ -145,7 +145,7 @@ function loadMesh() {
 	
 } 
 
-function setParameters() {
+this.setParameters = function() {
 		
 		mesh.doubleSided = true;
 		mesh.geometry.computeBoundingBox();
@@ -164,7 +164,7 @@ function setParameters() {
 		scene.add(mesh);
 }
 
-function animate() {
+this.animate = function() {
 
 	requestAnimationFrame(animate);
 	if(mesh) {
@@ -191,7 +191,7 @@ function animate() {
 	stats.update();
 }
 
-function rotateMesh() {
+this.rotateMesh = function() {
 	
 	newrotationmatrix = new THREE.Matrix4();
 	newrotation = new THREE.Vector3((targetRotationY-slowRotationY)*0.05,(targetRotationX-slowRotationX)*0.05,0);
@@ -211,7 +211,7 @@ function rotateMesh() {
 		home = 0;
 	}
 }
-function onMouseDown(event) {
+this.onMouseDown = function(event) {
 	
 	event = event ? event : document.event;
 	
@@ -243,7 +243,7 @@ function onMouseDown(event) {
 	}
 }
 
-function onMouseMove(event) {
+this.onMouseMove = function(event) {
 	
 	event = event ? event : document.event;
 	
@@ -280,7 +280,7 @@ function onMouseMove(event) {
 	}
 }
 
-function onMouseUp(event) {
+this.onMouseUp = function(event) {
 	
 	event = event ? event : document.event;
 	
@@ -294,7 +294,7 @@ function onMouseUp(event) {
 
 }
 
-function onMouseScroll(event) {
+this.onMouseScroll = function(event) {
 	
 	event = event ? event : document.event;
 	event.preventDefault();
@@ -303,12 +303,12 @@ function onMouseScroll(event) {
 	vslider.setValue(vslider.getValue() + (wheelData > 0 ? 0.05 : -0.05) * (vslider.getMaximum() - vslider.getMinimum()));
 }
 
-function onSliderChange() {
+this.onSliderChange = function(){
 	
 	camera.position.z = maxDimension*2 - this.getValue();
 }
 
-function onTouchStart(event) {
+this.onTouchStart = function(event) {
 	
 	event = event ? event: document.event;
 	mesh.doubleSided = false;
@@ -322,7 +322,7 @@ function onTouchStart(event) {
 	}
 }
 
-function onTouchMove(event) {
+this.onTouchMove = function (event) {
 	
 	event = event ? event: document.event;
 	
@@ -336,7 +336,7 @@ function onTouchMove(event) {
 	
 }
 
-function onTouchEnd(event) {
+this.onTouchEnd = function (event) {
 	
 	event = event ? event: document.event;
 	
@@ -345,7 +345,7 @@ function onTouchEnd(event) {
 	mesh.material.wireframe = false;
 }
 
-function Inertia() {
+this.Inertia = function () {
 	
 	if(noinertia) {
 		noinertia = 0;
@@ -360,7 +360,7 @@ function Inertia() {
 	mouseDownRotationX = mouseDownRotationY = mouseDownX = mouseDownY = mouseX = mouseY = 0;
 }
 
-function Home() {
+this.Home = function () {
 
 	targetRotationX = targetRotationY = mouseDownRotationX = mouseDownRotationY = mouseDownX = mouseDownY = mouseX = mouseY = slowRotationX = slowRotationY = 0;
 	//mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
@@ -373,7 +373,7 @@ function Home() {
 	
 }
 
-function loadCube() {
+this.loadCube = function() {
 	scene.remove(mesh);
 	if(mesh.geometry.faces.length == 6)
 		loadMesh();
@@ -383,7 +383,7 @@ function loadCube() {
 	}
 }
 
-function moveCamera(direction) {
+this.moveCamera = function(direction) {
 	
 
 	switch(direction) {
@@ -394,4 +394,6 @@ function moveCamera(direction) {
 		case "right": camera.position.x -= CAMERA_MOVE; break;
 		default: break;
 	}
+}
+
 }
