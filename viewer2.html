@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
-		<title>web3dviewer 1</title>
+		<title>web3dviewer 2</title>
 		<style type="text/css"> 
 			body {
 				color: #808080;
@@ -34,7 +34,7 @@
 		
 		<link rel="StyleSheet" type="text/css" href="css/bluecurve.css" />
 	</head>
-	<body onload="init(true); animate();">
+	<body onload="vc = new viewController(); vc.init(true); vc.animate();">
 <h1>web3dviewer</h1>
 <p>Demonstration example number 2</p>
 <div id="web3dviewer" style="position: absolute; top: 100px;">
@@ -60,8 +60,8 @@
 					</td></td>
 					</tr>	
 				</table>
-		<button onclick="Home(); return false;">Reset view</button><br />
-		Inertia: <input type="checkbox" name="inertia" onclick="Inertia(); "><br />
+		<button onclick="vc.Home(); return false;">Reset view</button><br />
+		Inertia: <input type="checkbox" name="inertia" onclick="vc.Inertia(); "><br />
 		</td></tr>
 	</table>
 

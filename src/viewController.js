@@ -66,6 +66,9 @@ light;
 
 this.init = function(prog) {
 
+       //to be replaced by global animate for window
+	requestAnimationFrame(this.animate);
+
 	progressive = prog;
 //	if(webgl) {
 	//	renderer = new THREE.WebGLRenderer({antialias: true});
@@ -106,18 +109,18 @@ this.init = function(prog) {
 	
 	vslider = new Slider(document.getElementById("slider-vertical"), document.getElementById("slider-vertical-input"), "vertical");
 	
-	vslider.onchange = onSliderChange;
+	vslider.onchange = this.onSliderChange;
 	
 	renderer.domElement.style.position = 'absolute';
 	renderer.domElement.style.left = '0px';
 
-	renderer.domElement.addEventListener('mousedown', onMouseDown, false);
-	renderer.domElement.addEventListener('DOMMouseScroll', onMouseScroll, false);
-	renderer.domElement.addEventListener('mousewheel', onMouseScroll, false);
-	renderer.domElement.addEventListener('touchstart', onTouchStart, false);
-	renderer.domElement.addEventListener('touchmove', onTouchMove, false);
-	renderer.domElement.addEventListener('touchend', onTouchEnd, false);
-	renderer.domElement.addEventListener('contextmenu', onContextMenu, false);
+	renderer.domElement.addEventListener('mousedown', this.onMouseDown, false);
+	renderer.domElement.addEventListener('DOMMouseScroll', this.onMouseScroll, false);
+	renderer.domElement.addEventListener('mousewheel', this.onMouseScroll, false);
+	renderer.domElement.addEventListener('touchstart', this.onTouchStart, false);
+	renderer.domElement.addEventListener('touchmove', this.onTouchMove, false);
+	renderer.domElement.addEventListener('touchend', this.onTouchEnd, false);
+	renderer.domElement.addEventListener('contextmenu', this.onContextMenu, false);
 	
 
 }
@@ -137,7 +140,7 @@ this.loadMesh = function() {
 	}
 	else {
 		loader = new THREE.JSONLoader();
-		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
+		loader.load('meshes/WaltHead.js', function ( geometry ) {
 			mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
 			setParameters();
 		}); 
@@ -166,7 +169,6 @@ this.setParameters = function() {
 
 this.animate = function() {
 
-	requestAnimationFrame(animate);
 	if(mesh) {
 		rotateMesh();
 		if(progressive) {
@@ -199,7 +201,7 @@ this.rotateMesh = function() {
 	newrotationmatrix.multiplySelf(mesh.matrix);
 	mesh.rotation.setRotationFromMatrix(newrotationmatrix);
 
-	if(noinertia) 
+	if(this.noinertia) 
 		targetRotationX = targetRotationY = 0;
 	else {
 		slowRotationX += (targetRotationX - slowRotationX)*0.02;
