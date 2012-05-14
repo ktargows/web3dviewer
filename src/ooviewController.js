@@ -15,7 +15,16 @@ function animate() {
 	vc1.render();
 }
 
-
+function init() {
+	vc = new viewController('web3dviewer','cube'); 
+	vc.init(); 
+	vc1 = new viewController('web3dviewer1','cube'); 
+	vc1.init(); 
+	vc_table = {
+		'web3dviewer': vc,
+		'web3dviewer1': vc1 }
+	animate();
+}
 
 var CAMERA_MOVE = 5;
 
@@ -56,9 +65,9 @@ mesh,
 light;
 
 
-viewController = function(element_id, mesh_name) {
-  this.element_id = element_id;
-  this.mesh_name = name;
+viewController = function(id, mesh_name) {
+  this.id = id;
+  this.mesh_name = mesh_name;
 
   this.mouseDownX = 0; 
   this.mouseDownY = 0;
@@ -135,7 +144,7 @@ viewController.prototype.init = function () {
 
 
 
-	document.getElementById(this.element_id).appendChild( this.renderer.domElement );
+	document.getElementById(this.id).appendChild( this.renderer.domElement );
 
 	
 //	vslider = new Slider(document.getElementById("slider-vertical"), document.getElementById("slider-vertical-input"), "vertical");
@@ -237,6 +246,10 @@ viewController.prototype.rotateMesh = function () {
 }
 
 viewController.prototype.onMouseDown = function (event) {
+
+   var vc = vc_table[event.target.parentNode.id];
+console.log("MouseDownX", vc.mouseDownX );
+
 
 	event = event ? event : document.event;
 	
