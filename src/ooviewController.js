@@ -1,74 +1,3 @@
-function isWebGLSupported() {
-	try { 
-	 !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); 
-	} catch( e ) { 
-		return 0;
-	}
-	return 1;
-}
-
-//requestAnimationFrame(vc.animate);
-function animate() {
-        requestAnimationFrame(animate);
-	for (var i in vc_table){
-		vc_table[i].render();
-	}
-}
-
-var vc_byid = [];
-var vc_table = [];
-
-function init() {
-
-	var components = document.getElementsByClassName("web3dviewer");
-	for (var i=0; i < components.length; i++) {
-		var element = components.item(i);
-		var vc = new viewController(element.id, 'cube');
-		vc_byid[element.id] = vc;
-		vc_table.push(vc);
-		vc.init();
-	}
-	animate();
-}
-
-var CAMERA_MOVE = 5;
-
-//Vars
-var
-home,
-maxDimension,
-stats,
-vslider,
-offset=0,
-refinestep = 10,
-loaded = false,
-time = new Date().getTime(),
-timedelay = 3000,
-timeLastRefine = new Date().getTime(),
-minfps = 1,
-fps=0,
-framescounter=0,
-progressive=false,
-
-//Renderer
-WIDTH = 200,
-HEIGHT = 200,
-
-//Camera
-VIEW_ANGLE = 60,
-ASPECT = WIDTH / HEIGHT,
-NEAR = 1,
-FAR = 10000,
-
-//important vars
-webgl = isWebGLSupported(),
-loader,
-scene,
-camera,
-renderer,
-mesh,
-light;
-
 
 viewController = function(id, mesh_name) {
   this.id = id;
@@ -90,7 +19,6 @@ viewController = function(id, mesh_name) {
   this.newrotation;
   this.slowRotationX=0;
   this.slowRotationY=0;
-
 }
 
 viewController.prototype.init = function () {
@@ -120,32 +48,12 @@ viewController.prototype.init = function () {
 	this.light = new THREE.PointLight( 0x707070, 1, 2000 );
 	this.scene.add( this.light );
 
-	this.loadMesh(true);
-
-//	setParameters();
-	this.mesh.doubleSided = true;
-	this.mesh.geometry.computeBoundingBox();
-	var box = this.mesh.geometry.boundingBox;
-	if(box) {
-		maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
-		maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
-		this.camera.position.z = this.light.position.z = maxDimension*2;
-		this.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
-		this.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
-		
-		//vslider.setMinimum(-maxDimension);
-		//vslider.setMaximum(maxDimension*1.5);
-		//vslider.setValue(maxDimension*0.25);
-	}
-	this.scene.add(this.mesh);
-
-
+	this.loadMesh();
+	this.setParameters();
 
 	document.getElementById(this.id).appendChild( this.renderer.domElement );
 
-	
-//	vslider = new Slider(document.getElementById("slider-vertical"), document.getElementById("slider-vertical-input"), "vertical");
-	
+//	vslider = new Slider(document.getElementById("slider-vertical"), document.getElementById("slider-vertical-input"), "vertical");	
 //	vslider.onchange = onSliderChange;
 	
 	this.renderer.domElement.style.position = 'absolute';
@@ -160,8 +68,6 @@ viewController.prototype.init = function () {
 //	this.renderer.domElement.addEventListener('contextmenu', onContextMenu, false);
 
 	this.render();
-	
-
 }
 
 /*
@@ -173,42 +79,42 @@ function onContextMenu(event) {
 	return false;
 }
 */
-viewController.prototype.loadMesh = function (test) {
+
+viewController.prototype.loadMesh = function () {
 	
-	if(!test) {
+	if(this.mesh_name == "cube") {
+		this.mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
+	} else if(this.mesh_name == "disney") {
+		loader = new THREE.JSONLoader();
+		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
+			mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
+			} );
+	} else {
 		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
 		this.loadBaseMesh();
 	}
-	else {
-		this.mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
-//		loader = new THREE.JSONLoader();
-//		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
-//			mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
-//		}; 
-	}
+		
 	
 } 
-/*
-function setParameters() {
+
+viewController.prototype.setParameters = function () {
 		
-		mesh.doubleSided = true;
-		mesh.geometry.computeBoundingBox();
-		var box = mesh.geometry.boundingBox;
+		this.mesh.doubleSided = true;
+		this.mesh.geometry.computeBoundingBox();
+		var box = this.mesh.geometry.boundingBox;
 		if(box) {
 			maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
 			maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
-			camera.position.z = light.position.z = maxDimension*2;
-			camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
-			camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
+			this.camera.position.z = this.light.position.z = maxDimension*2;
+			this.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
+			this.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
 			
 			//vslider.setMinimum(-maxDimension);
 			//vslider.setMaximum(maxDimension*1.5);
 			//vslider.setValue(maxDimension*0.25);
 		}
-		scene.add(mesh);
+		this.scene.add(this.mesh);
 }
-*/
-
 
 viewController.prototype.render = function () {
 	if(this.mesh) {
@@ -382,6 +288,7 @@ function onTouchEnd(event) {
 	mesh.doubleSided = true;
 	mesh.material.wireframe = false;
 }
+
 /*
 function Inertia() {
 	
@@ -413,16 +320,6 @@ function Home() {
 }
 */
 /*
-function loadCube() {
-	scene.remove(mesh);
-	if(mesh.geometry.faces.length == 6)
-		loadMesh();
-	else {
-		mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
-		setParameters();
-	}
-}
-
 function moveCamera(direction) {
 	
 

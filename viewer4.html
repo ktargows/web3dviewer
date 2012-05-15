@@ -35,26 +35,18 @@
 
 		<link rel="StyleSheet" type="text/css" href="css/bluecurve.css" />
 	</head>
-	<body onload="init();">
+	<body onload="web3dviewer_init();">
 <h1>web3dviewer</h1>
-<p>Demonstration example number 4</p>
-<div class="web3dviewer" id="web3dviewer1" style="position: absolute; top: 100px; width: 200px; height: 200px; "></div>
-<div class="web3dviewer"id="web3dviewer2" style="position: absolute; top: 100px; left: 220px; width: 200px; height: 200px; "></div>
-<div class="web3dviewer" id="web3dviewer3"  style="position: absolute; top: 320px; width: 200px; height: 200px;"></div>
-<div class="web3dviewer" id="web3dviewer4"  style="position: absolute; top: 320px; left: 220px; width: 200px; height: 200px;"></div>
+<p>Four independent components</p>
 
-<!--
-<div id="web3dviewer2" style="position: absolute; top: 100px;"></div>
-'libs/Three.js',
-'libs/range.js',
-'libs/RequestAnimationFrame.js',
-'libs/slider.js',
-'libs/Stats.js',
-'libs/timer.js',
-'viewController.js',
-'refineMesh.js',
-'loadBaseMesh.js'
--->
+<div class="web3dviewer" id="web3dviewer1" mesh="cube" style="position: absolute; top: 100px; width: 200px; height: 200px; "></div>
+
+<div class="web3dviewer"id="web3dviewer2" mesh="cube" style="position: absolute; top: 100px; left: 220px; width: 200px; height: 200px; "></div>
+
+<div class="web3dviewer" id="web3dviewer3" mesh="cube" style="position: absolute; top: 320px; width: 200px; height: 200px;"></div>
+
+<div class="web3dviewer" id="web3dviewer4" mesh="cube" style="position: absolute; top: 320px; left: 220px; width: 200px; height: 200px;"></div>
+
 
 
 <script type="text/javascript" src="src/libs/Three.js"></script>
@@ -65,7 +57,7 @@
 <script type="text/javascript" src="src/libs/timer.js"></script>
 <script type="text/javascript" src="src/ooviewController.js"></script>
 <script type="text/javascript" src="src/loadBaseMesh.js"></script>
-
+<script type="text/javascript" src="src/global.js"></script>
 
 
 	</body>
