@@ -38,40 +38,10 @@
 	<body onload="init();">
 <h1>web3dviewer</h1>
 <p>Demonstration example number 4</p>
-<div id="web3dviewer" style="width: 200px; height: 200px;">
-<!-- This should be moved into Javascript function similar to github.com/mrdoob/stats.js/ 
-	<div style="" id="panel">
-	<table>
-		<tr>
-			<td><div class="slider" id="slider-vertical" tabIndex="1">
-				<input class="slider-input" id="slider-vertical-input" name="slider-vertical-input" />
-			</div></td>
-			<td><table><tr>
-					<td></td>
-					<td><button onclick="moveCamera('up'); return false;">&uarr;</button></td>
-					<td></td>
-					</tr><tr>
-					<td><button onclick="moveCamera('left'); return false;">&larr;</button></td>
-					<td></td>
-					<td><button onclick="moveCamera('right'); return false;">&rarr;</button></td>
-					</tr><tr>
-					<td></td>
-					<td><button onclick="moveCamera('down'); return false;">&darr;</button></td>
-					</td></td>
-					</tr>	
-				</table>
-		<button onclick="Home(); return false;">Reset view</button><br />
-		Inertia: <input type="checkbox" name="inertia" onclick="Inertia(); "><br />
-		</td></tr>
-	</table>
-
-	</div>
-
--->
-</div>
-
-<div id="web3dviewer1"  style="width: 200px; height: 200px;">
-</div>
+<div class="web3dviewer" id="web3dviewer1" style="position: absolute; top: 100px; width: 200px; height: 200px; "></div>
+<div class="web3dviewer"id="web3dviewer2" style="position: absolute; top: 100px; left: 220px; width: 200px; height: 200px; "></div>
+<div class="web3dviewer" id="web3dviewer3"  style="position: absolute; top: 320px; width: 200px; height: 200px;"></div>
+<div class="web3dviewer" id="web3dviewer4"  style="position: absolute; top: 320px; left: 220px; width: 200px; height: 200px;"></div>
 
 <!--
 <div id="web3dviewer2" style="position: absolute; top: 100px;"></div>
@@ -94,6 +64,7 @@
 <script type="text/javascript" src="src/libs/slider.js"></script>
 <script type="text/javascript" src="src/libs/timer.js"></script>
 <script type="text/javascript" src="src/ooviewController.js"></script>
+<script type="text/javascript" src="src/loadBaseMesh.js"></script>
 
 
 

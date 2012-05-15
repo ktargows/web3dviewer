@@ -10,19 +10,24 @@ function isWebGLSupported() {
 //requestAnimationFrame(vc.animate);
 function animate() {
         requestAnimationFrame(animate);
-
-	vc.render();
-	vc1.render();
+	for (var i in vc_table){
+		vc_table[i].render();
+	}
 }
 
+var vc_byid = [];
+var vc_table = [];
+
 function init() {
-	vc = new viewController('web3dviewer','cube'); 
-	vc.init(); 
-	vc1 = new viewController('web3dviewer1','cube'); 
-	vc1.init(); 
-	vc_table = {
-		'web3dviewer': vc,
-		'web3dviewer1': vc1 }
+
+	var components = document.getElementsByClassName("web3dviewer");
+	for (var i=0; i < components.length; i++) {
+		var element = components.item(i);
+		var vc = new viewController(element.id, 'cube');
+		vc_byid[element.id] = vc;
+		vc_table.push(vc);
+		vc.init();
+	}
 	animate();
 }
 
@@ -46,8 +51,8 @@ framescounter=0,
 progressive=false,
 
 //Renderer
-WIDTH = window.innerWidth*0.2,
-HEIGHT = window.innerHeight*0.3,
+WIDTH = 200,
+HEIGHT = 200,
 
 //Camera
 VIEW_ANGLE = 60,
@@ -80,7 +85,7 @@ viewController = function(id, mesh_name) {
   this.mouseDownRotationX = 0;
   this.mouseDownRotationY = 0;
   this.wheelData = 0;
-  this.noinertia = 1;
+  this.noinertia = 0;
   this.newrotationmatrix;
   this.newrotation;
   this.slowRotationX=0;
@@ -115,32 +120,24 @@ viewController.prototype.init = function () {
 	this.light = new THREE.PointLight( 0x707070, 1, 2000 );
 	this.scene.add( this.light );
 
-//function xxx( geometry) {
-//		mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
-//		}
-	
-//	loadMesh();
-//	loadCube();
-	this.mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
-//        loader = new THREE.JSONLoader();
-//	loader.load('meshes/WaltHeadLo.js', xxx); 
+	this.loadMesh(true);
 
 //	setParameters();
-		this.mesh.doubleSided = true;
-		this.mesh.geometry.computeBoundingBox();
-		var box = this.mesh.geometry.boundingBox;
-		if(box) {
-			maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
-			maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
-			this.camera.position.z = this.light.position.z = maxDimension*2;
-			this.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
-			this.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
-			
-			//vslider.setMinimum(-maxDimension);
-			//vslider.setMaximum(maxDimension*1.5);
-			//vslider.setValue(maxDimension*0.25);
-		}
-		this.scene.add(this.mesh);
+	this.mesh.doubleSided = true;
+	this.mesh.geometry.computeBoundingBox();
+	var box = this.mesh.geometry.boundingBox;
+	if(box) {
+		maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
+		maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
+		this.camera.position.z = this.light.position.z = maxDimension*2;
+		this.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
+		this.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
+		
+		//vslider.setMinimum(-maxDimension);
+		//vslider.setMaximum(maxDimension*1.5);
+		//vslider.setValue(maxDimension*0.25);
+	}
+	this.scene.add(this.mesh);
 
 
 
@@ -162,7 +159,7 @@ viewController.prototype.init = function () {
 //	this.renderer.domElement.addEventListener('touchend', onTouchEnd, false);
 //	this.renderer.domElement.addEventListener('contextmenu', onContextMenu, false);
 
- this.render();
+	this.render();
 	
 
 }
@@ -175,22 +172,23 @@ function onContextMenu(event) {
 	event.preventDefault();
 	return false;
 }
-
-function loadMesh() {
+*/
+viewController.prototype.loadMesh = function (test) {
 	
-	if(progressive) {
-		mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
-		loadBaseMesh();
+	if(!test) {
+		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
+		this.loadBaseMesh();
 	}
 	else {
-		loader = new THREE.JSONLoader();
-		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
-			mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
-		}); 
+		this.mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
+//		loader = new THREE.JSONLoader();
+//		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
+//			mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
+//		}; 
 	}
 	
 } 
-
+/*
 function setParameters() {
 		
 		mesh.doubleSided = true;
@@ -247,94 +245,90 @@ viewController.prototype.rotateMesh = function () {
 
 viewController.prototype.onMouseDown = function (event) {
 
-   var vc = vc_table[event.target.parentNode.id];
-console.log("MouseDownX", vc.mouseDownX );
-
+   var vc = vc_byid[event.target.parentNode.id];
 
 	event = event ? event : document.event;
 	
 	event.preventDefault();
 
 	
-	document.addEventListener('mouseup', this.onMouseUp, false);
-	document.addEventListener('mouseout', this.onMouseUp, false);
-	document.addEventListener('mousemove', onMouseMove, false);
+	document.addEventListener('mouseup', vc.onMouseUp, false);
+	document.addEventListener('mouseout', vc.onMouseUp, false);
+	document.addEventListener('mousemove', vc.onMouseMove, false);
 
 	
 	if(event.pageX || event.pageY) {
-		this.mouseDownX = event.pageX;
-		this.mouseDownY = event.pageY;
+		vc.mouseDownX = event.pageX;
+		vc.mouseDownY = event.pageY;
 	}
 	else if(event.clientX || event.clientY) {
-		this.mouseDownX = event.clientX + document.body.scrollLeft;
-		this.mouseDownY = event.clientY + document.body.scrollTop;
+		vc.mouseDownX = event.clientX + document.body.scrollLeft;
+		vc.mouseDownY = event.clientY + document.body.scrollTop;
 	}
 	
-	this.mouseDownY -= this.windowHalfY;
-	this.mouseDownX -= this.windowHalfX;
+	vc.mouseDownY -= vc.windowHalfY;
+	vc.mouseDownX -= vc.windowHalfX;
 	
 	if(event.which == 1) {
-		this.mouseDownRotationX = this.targetRotationX;
-		this.mouseDownRotationY = this.targetRotationY;
+		vc.mouseDownRotationX = vc.targetRotationX;
+		vc.mouseDownRotationY = vc.targetRotationY;
 	}
 
-console.log("MouseDown",this.mouseX);
 }
 
 viewController.prototype.onMouseMove = function (event) {
 
+   var vc = vc_byid[event.target.parentNode.id];
 	
 	event = event ? event : document.event;
 	
 	event.preventDefault();
 	
 	if(event.pageX || event.pageY) {
-		this.mouseX = event.pageX;
-		this.mouseY = event.pageY;
+		vc.mouseX = event.pageX;
+		vc.mouseY = event.pageY;
 	}
 	else if(event.clientX || event.clientY) {
-		this.mouseX = event.clientX + document.body.scrollLeft;
-		this.mouseY = event.clientY + document.body.scrollTop;
+		vc.mouseX = event.clientX + document.body.scrollLeft;
+		vc.mouseY = event.clientY + document.body.scrollTop;
 	}
 	
-	this.mouseX -= this.windowHalfX;
-	this.mouseY -= this.windowHalfY;
+	vc.mouseX -= vc.windowHalfX;
+	vc.mouseY -= vc.windowHalfY;
 	if(event.which == 1) {
-		if(this.noinertia) {
-			this.targetRotationX = (this.mouseX - this.mouseDownX)*0.2;
-			this.targetRotationY = (this.mouseY - this.mouseDownY)*0.2;
-			this.mouseDownX = this.mouseX;
-			this.mouseDownY = this.mouseY;
+		if(vc.noinertia) {
+			vc.targetRotationX = (vc.mouseX - vc.mouseDownX)*0.2;
+			vc.targetRotationY = (vc.mouseY - vc.mouseDownY)*0.2;
+			vc.mouseDownX = vc.mouseX;
+			vc.mouseDownY = vc.mouseY;
 		}
 		else {
-			this.targetRotationX = this.mouseDownRotationX + (this.mouseX - this.mouseDownX)*0.02;
-			this.targetRotationY = this.mouseDownRotationY + (this.mouseY - this.mouseDownY)*0.02;
+			vc.targetRotationX = vc.mouseDownRotationX + (vc.mouseX - vc.mouseDownX)*0.02;
+			vc.targetRotationY = vc.mouseDownRotationY + (vc.mouseY - vc.mouseDownY)*0.02;
 		}
 	}
 	else if(event.which == 3) {
-		this.camera.position.x -= (this.mouseX - this.mouseDownX)*0.2;
-		this.camera.position.y += (this.mouseY - this.mouseDownY)*0.2;
-		this.mouseDownX = this.mouseX;
-		this.mouseDownY = this.mouseY;
+		vc.camera.position.x -= (vc.mouseX - vc.mouseDownX)*0.2;
+		vc.camera.position.y += (vc.mouseY - vc.mouseDownY)*0.2;
+		vc.mouseDownX = vc.mouseX;
+		vc.mouseDownY = vc.mouseY;
 	}
-console.log("MouseMove",this.mouseX);
+
 }
 
-function onMouseMove (event) {
-  console.log("MouseMove1",this.mouseX);
-} 
 
 viewController.prototype.onMouseUp = function (event) {
-	
+
+        var vc = vc_byid[event.target.parentNode.id];
 	event = event ? event : document.event;
 	
 	event.preventDefault();
-	this.mesh.doubleSided = true;
-	this.mesh.material.wireframe = false;
+	vc.mesh.doubleSided = true;
+	vc.mesh.material.wireframe = false;
 
-	document.removeEventListener('mouseup', this.onMouseUp, false);
-	document.removeEventListener('mouseout', this.onMouseUp, false);
-	document.removeEventListener('mousemove', this.onMouseMove, false);
+	document.removeEventListener('mouseup', vc.onMouseUp, false);
+	document.removeEventListener('mouseout', vc.onMouseUp, false);
+	document.removeEventListener('mousemove', vc.onMouseMove, false);
 
 }
 
