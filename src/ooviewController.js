@@ -85,9 +85,10 @@ viewController.prototype.loadMesh = function () {
 	if(this.mesh_name == "cube") {
 		this.mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
 	} else if(this.mesh_name == "disney") {
+		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
 		loader = new THREE.JSONLoader();
 		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
-			mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
+			this.mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
 			} );
 	} else {
 		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
