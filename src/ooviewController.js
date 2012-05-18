@@ -20,19 +20,23 @@ viewController = function(id, mesh_name) {
   this.slowRotationX = 0;
   this.slowRotationY = 0;
   this.home = false;
+
+  this.width = 200;
+  this.height = 200;
+
 }
 
 viewController.prototype.init = function () {
 
 	this.renderer = new THREE.CanvasRenderer({antialias: true});
 		
-	this.renderer.setSize(WIDTH, HEIGHT);
+	this.renderer.setSize(this.width, this.height);
 	this.renderer.setClearColorHex(0xEEEEEE, 1.0);
 	this.renderer.clear();
 	
 	this.camera = new THREE.PerspectiveCamera(
 			   VIEW_ANGLE,
-			   ASPECT,
+			   this.width/this.height,
 			   NEAR,
 			   FAR );
 	

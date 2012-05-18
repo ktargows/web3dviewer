@@ -29,19 +29,17 @@ function web3dviewer_init() {
 		var vc = new viewController(id, mesh);
 		vc_byid[element.id] = vc;
 		vc_table.push(vc);
+
+		vc.width = parseInt(element.style.width);
+		vc.height = parseInt(element.style.height);
 		vc.init();
 	}
 	animate();
 }
 
-// Default settins
-var WIDTH = 200,
-HEIGHT = 200,
-VIEW_ANGLE = 60,
-ASPECT = WIDTH / HEIGHT,
+var VIEW_ANGLE = 60,
 NEAR = 1,
 FAR = 10000;
-
 
 /*
 var CAMERA_MOVE = 5;
