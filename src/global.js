@@ -34,6 +34,16 @@ function web3dviewer_init() {
 	animate();
 }
 
+// Default settins
+var WIDTH = 200,
+HEIGHT = 200,
+VIEW_ANGLE = 60,
+ASPECT = WIDTH / HEIGHT,
+NEAR = 1,
+FAR = 10000;
+
+
+/*
 var CAMERA_MOVE = 5;
 
 //Vars
@@ -54,21 +64,8 @@ framescounter=0,
 progressive=false,
 
 //Renderer
-WIDTH = 200,
-HEIGHT = 200,
-
-//Camera
-VIEW_ANGLE = 60,
-ASPECT = WIDTH / HEIGHT,
-NEAR = 1,
-FAR = 10000,
 
 //important vars
-webgl = isWebGLSupported(),
-loader,
-scene,
-camera,
-renderer,
-mesh,
-light;
+webgl = isWebGLSupported();
+*/
 

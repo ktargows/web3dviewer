@@ -2,17 +2,14 @@ viewController.prototype.loadBaseMesh = function () {
 	var http_request = new XMLHttpRequest();
 	var url = "base_mesh.php"; 
 	var vc_id = ""+this.id;
-	http_request.onreadystatechange = handle_json;
+	http_request.onreadystatechange = handle_json.bind(this);
 	http_request.open("GET", url, true);
 	http_request.send(null);
 
- 
 	function handle_json() {
-		
+		var vc = this;
 		if (http_request.readyState == 4) {
 			if (http_request.status == 200) {
-				var vc = vc_byid[vc_id];
-				console.log(vc_id);
 				var json_data = http_request.responseText;
 				var json = JSON.parse(json_data); 
 				var i;
@@ -40,7 +37,7 @@ viewController.prototype.loadBaseMesh = function () {
 			vc.setParameters();
 
 			} else {
-                      		alert('Server connection error.');
+				alert('Server connection error.');
 			}
 		http_request = null;
 		}

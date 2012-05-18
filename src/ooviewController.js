@@ -59,9 +59,9 @@ viewController.prototype.init = function () {
 	this.renderer.domElement.style.position = 'absolute';
 	this.renderer.domElement.style.left = '0px';
 
-	this.renderer.domElement.addEventListener('mousedown', this.onMouseDown, false);
+	this.renderer.domElement.addEventListener('mousedown', this.onMouseDown.bind(this), false);
 //	this.renderer.domElement.addEventListener('DOMMouseScroll', onMouseScroll, false);
-//	this.renderer.domElement.addEventListener('mousewheel', onMouseScroll, false);
+//	this.renderer.domElement.addEventListener('mousewheel', this.onMouseScroll.bind(this), false);
 //	this.renderer.domElement.addEventListener('touchstart', onTouchStart, false);
 //	this.renderer.domElement.addEventListener('touchmove', onTouchMove, false);
 //	this.renderer.domElement.addEventListener('touchend', onTouchEnd, false);
@@ -70,18 +70,10 @@ viewController.prototype.init = function () {
 	this.render();
 }
 
-/*
-function onContextMenu(event) {
-	
-	event = event ? event : document.event;
-	
-	event.preventDefault();
-	return false;
-}
-*/
+
 
 viewController.prototype.loadMesh = function () {
-	
+
 	if(this.mesh_name == "cube") {
 		this.mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
 	} else if(this.mesh_name == "disney") {
@@ -153,13 +145,11 @@ viewController.prototype.rotateMesh = function () {
 
 viewController.prototype.onMouseDown = function (event) {
 
-   var vc = vc_byid[event.target.parentNode.id];
-
+	var vc = vc_byid[event.target.parentNode.id];
 	event = event ? event : document.event;
 	
 	event.preventDefault();
 
-	
 	document.addEventListener('mouseup', vc.onMouseUp, false);
 	document.addEventListener('mouseout', vc.onMouseUp, false);
 	document.addEventListener('mousemove', vc.onMouseMove, false);
@@ -182,14 +172,16 @@ viewController.prototype.onMouseDown = function (event) {
 		vc.mouseDownRotationY = vc.targetRotationY;
 	}
 
+	this.mesh.doubleSided = false;
+	this.mesh.material.wireframe = true;
+
 }
 
 viewController.prototype.onMouseMove = function (event) {
 
-   var vc = vc_byid[event.target.parentNode.id];
+	var vc = vc_byid[event.target.parentNode.id];
 	
 	event = event ? event : document.event;
-	
 	event.preventDefault();
 	
 	if(event.pageX || event.pageY) {
@@ -227,7 +219,7 @@ viewController.prototype.onMouseMove = function (event) {
 
 viewController.prototype.onMouseUp = function (event) {
 
-        var vc = vc_byid[event.target.parentNode.id];
+	var vc = vc_byid[event.target.parentNode.id];
 	event = event ? event : document.event;
 	
 	event.preventDefault();
@@ -237,36 +229,44 @@ viewController.prototype.onMouseUp = function (event) {
 	document.removeEventListener('mouseup', vc.onMouseUp, false);
 	document.removeEventListener('mouseout', vc.onMouseUp, false);
 	document.removeEventListener('mousemove', vc.onMouseMove, false);
+	console.log("mouseup "+vc.id);
 
 }
 
-function onMouseScroll(event) {
-	
+viewController.prototype.onMouseScroll = function (event) {
+
+	var vc = vc_byid[event.target.parentNode.id];
 	event = event ? event : document.event;
 	event.preventDefault();
 	
-	wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
+	vc.wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
 	vslider.setValue(vslider.getValue() + (wheelData > 0 ? 0.05 : -0.05) * (vslider.getMaximum() - vslider.getMinimum()));
-}
 
+}
+/*
 function onSliderChange() {
-	
-	camera.position.z = maxDimension*2 - this.getValue();
-}
 
-function onTouchStart(event) {
+	camera.position.z = maxDimension*2 - this.getValue();
+
+}
+*/
+
+viewController.prototype.onTouchStart = function (event) {
 	
+	var vc = this;
 	event = event ? event: document.event;
-	mesh.doubleSided = false;
-	mesh.material.wireframe = true;
+	vc.mesh.doubleSided = false;
+	vc.mesh.material.wireframe = true;
 	event.preventDefault();
 	if(event.touches.length == 1) {
-		mouseDownY = event.touches[0].pageY - windowHalfY;
-		mouseDownX = event.touches[0].pageX - windowHalfX;
-		mouseDownRotationX = targetRotationX;
-		mouseDownRotationY = targetRotationY;
+		vc.mouseDownY = event.touches[0].pageY - vc.windowHalfY;
+		vc.mouseDownX = event.touches[0].pageX - vc.windowHalfX;
+		vc.mouseDownRotationX = vc.targetRotationX;
+		vc.mouseDownRotationY = vc.targetRotationY;
 	}
+
 }
+
 
 function onTouchMove(event) {
 	
@@ -290,6 +290,18 @@ function onTouchEnd(event) {
 	mesh.doubleSided = true;
 	mesh.material.wireframe = false;
 }
+
+/*
+
+function onContextMenu(event) {
+	
+	event = event ? event : document.event;
+	
+
+	event.preventDefault();
+	return false;
+}
+*/
 
 /*
 function Inertia() {
