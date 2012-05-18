@@ -17,8 +17,9 @@ viewController = function(id, mesh_name) {
   this.noinertia = 0;
   this.newrotationmatrix;
   this.newrotation;
-  this.slowRotationX=0;
-  this.slowRotationY=0;
+  this.slowRotationX = 0;
+  this.slowRotationY = 0;
+  this.home = false;
 }
 
 viewController.prototype.init = function () {
@@ -67,6 +68,8 @@ viewController.prototype.init = function () {
 //	this.renderer.domElement.addEventListener('touchend', onTouchEnd, false);
 //	this.renderer.domElement.addEventListener('contextmenu', onContextMenu, false);
 
+	this.createPanel();
+	
 	this.render();
 }
 
@@ -90,6 +93,26 @@ viewController.prototype.loadMesh = function () {
 		
 	
 } 
+
+viewController.prototype.createPanel = function () {
+
+	var container = document.createElement( 'div' );
+	container.id = this.id+"_panel";
+	container.className = "panel";
+	container.style.cssText = 'z-index: 10; top: 0px; float: left; position: relative;';
+	
+	var home_button = document.createElement( 'button' );
+	home_button.innerHTML="Reset view";
+	home_button.style.cssText = 'color:#000000';
+
+	home_button.onclick = this.Home;
+	container.appendChild( home_button );
+
+	document.getElementById(this.id).appendChild( container );
+
+//<button onclick="Home(); return false;">Reset view</button><br />
+
+}
 
 viewController.prototype.setParameters = function () {
 		
@@ -134,12 +157,10 @@ viewController.prototype.rotateMesh = function () {
 		this.slowRotationY += (this.targetRotationY - this.slowRotationY)*0.02;
 	}
 	
-/*
 	if(this.home) {
 		this.mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
 		this.home = false;
 	}
-*/
 
 }
 
@@ -229,10 +250,10 @@ viewController.prototype.onMouseUp = function (event) {
 	document.removeEventListener('mouseup', vc.onMouseUp, false);
 	document.removeEventListener('mouseout', vc.onMouseUp, false);
 	document.removeEventListener('mousemove', vc.onMouseMove, false);
-	console.log("mouseup "+vc.id);
 
 }
 
+/*
 viewController.prototype.onMouseScroll = function (event) {
 
 	var vc = vc_byid[event.target.parentNode.id];
@@ -243,6 +264,7 @@ viewController.prototype.onMouseScroll = function (event) {
 	vslider.setValue(vslider.getValue() + (wheelData > 0 ? 0.05 : -0.05) * (vslider.getMaximum() - vslider.getMinimum()));
 
 }
+*/
 /*
 function onSliderChange() {
 
@@ -251,6 +273,7 @@ function onSliderChange() {
 }
 */
 
+/*
 viewController.prototype.onTouchStart = function (event) {
 	
 	var vc = this;
@@ -290,7 +313,7 @@ function onTouchEnd(event) {
 	mesh.doubleSided = true;
 	mesh.material.wireframe = false;
 }
-
+*/
 /*
 
 function onContextMenu(event) {
@@ -319,20 +342,23 @@ function Inertia() {
 	mouseDownRotationX = mouseDownRotationY = mouseDownX = mouseDownY = mouseX = mouseY = 0;
 }
 */
-/*
-function Home() {
 
-	targetRotationX = targetRotationY = mouseDownRotationX = mouseDownRotationY = mouseDownX = mouseDownY = mouseX = mouseY = slowRotationX = slowRotationY = 0;
+
+viewController.prototype.Home = function() {
+
+	var vc = vc_byid[event.target.parentNode.parentNode.id];
+
+	vc.targetRotationX = vc.targetRotationY = vc.mouseDownRotationX = vc.mouseDownRotationY = vc.mouseDownX = vc.mouseDownY = vc.mouseX = vc.mouseY = vc.slowRotationX = vc.slowRotationY = 0;
 	//mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
-	vslider.setValue(maxDimension*0.25);
-	mesh.geometry.computeBoundingBox();
-	var box = mesh.geometry.boundingBox;
-	camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
-	camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
-	home = 1;
-	
+//	vslider.setValue(maxDimension*0.25);
+	vc.mesh.geometry.computeBoundingBox();
+	var box = vc.mesh.geometry.boundingBox;
+	vc.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
+	vc.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
+	vc.home = true;
+
 }
-*/
+
 /*
 function moveCamera(direction) {
 	
