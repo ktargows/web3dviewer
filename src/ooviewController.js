@@ -89,7 +89,8 @@ viewController.prototype.loadMesh = function () {
 		loader = new THREE.JSONLoader();
 		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
 			this.mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
-			} );
+			this.setParameters();
+			}.bind(this) );
 	} else {
 		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
 		this.loadBaseMesh();

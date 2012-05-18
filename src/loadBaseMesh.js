@@ -23,7 +23,6 @@ viewController.prototype.loadBaseMesh = function () {
 					vc.mesh.geometry.faces.push( new THREE.Face3( json.faces[i][0], json.faces[i][1], json.faces[i][2] ) );
 				}
 	
-				/*
 				vc.mesh.geometry.computeCentroids();
 				vc.mesh.geometry.computeFaceNormals();
 				vc.mesh.geometry.computeBoundingBox();
@@ -38,7 +37,6 @@ viewController.prototype.loadBaseMesh = function () {
 					vc.mesh.geometry.vertices[i].position.y -= offset_y;
 					vc.mesh.geometry.vertices[i].position.z -= offset_z;
 				}
-				*/
 			vc.setParameters();
 
 			} else {
