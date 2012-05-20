@@ -20,9 +20,10 @@ viewController = function(id, mesh_name) {
   this.slowRotationX = 0;
   this.slowRotationY = 0;
   this.home = false;
+  this.maxDimension = 0;
 
-  this.width = 200;
-  this.height = 200;
+  this.width = 300;
+  this.height = 300;
 
 }
 
@@ -52,30 +53,29 @@ viewController.prototype.init = function () {
 	this.scene.add( new THREE.AmbientLight( 0x505050, 2000 ) );
 	this.light = new THREE.PointLight( 0x707070, 1, 2000 );
 	this.scene.add( this.light );
-
+	
+	this.createPanel();
+	
 	this.loadMesh();
 	this.setParameters();
 
 	document.getElementById(this.id).appendChild( this.renderer.domElement );
-
-//	vslider = new Slider(document.getElementById("slider-vertical"), document.getElementById("slider-vertical-input"), "vertical");	
-//	vslider.onchange = onSliderChange;
 	
 	this.renderer.domElement.style.position = 'absolute';
-	this.renderer.domElement.style.left = '0px';
+	this.renderer.domElement.style.left = '10px';
 
 	this.renderer.domElement.addEventListener('mousedown', this.onMouseDown.bind(this), false);
-//	this.renderer.domElement.addEventListener('DOMMouseScroll', onMouseScroll, false);
-//	this.renderer.domElement.addEventListener('mousewheel', this.onMouseScroll.bind(this), false);
+	this.renderer.domElement.addEventListener('DOMMouseScroll', this.onMouseScroll.bind(this), false);
+	this.renderer.domElement.addEventListener('mousewheel', this.onMouseScroll.bind(this), false);
 //	this.renderer.domElement.addEventListener('touchstart', onTouchStart, false);
 //	this.renderer.domElement.addEventListener('touchmove', onTouchMove, false);
 //	this.renderer.domElement.addEventListener('touchend', onTouchEnd, false);
-//	this.renderer.domElement.addEventListener('contextmenu', onContextMenu, false);
+	this.renderer.domElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
 
-	this.createPanel();
+
 	
 	this.render();
-}
+} 
 
 
 
@@ -111,6 +111,18 @@ viewController.prototype.createPanel = function () {
 
 	home_button.onclick = this.Home;
 	container.appendChild( home_button );
+	
+	var divslider = document.createElement('div');
+	divslider.className = "slider";
+	divslider.id = "slider-vertical-"+this.id;
+	var divsliderinput = document.createElement('input');
+	divsliderinput.id = "slider-vertical-input-"+this.id;
+	divsliderinput.className = "slider-input";
+	divslider.appendChild(divsliderinput);
+	container.appendChild(divslider);
+	
+	this.vslider = new Slider(divslider, divsliderinput, "vertical");
+	this.vslider.onchange = this.onSliderChange.bind(this);
 
 	document.getElementById(this.id).appendChild( container );
 
@@ -124,15 +136,16 @@ viewController.prototype.setParameters = function () {
 		this.mesh.geometry.computeBoundingBox();
 		var box = this.mesh.geometry.boundingBox;
 		if(box) {
-			maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
-			maxDimension = Math.ceil(Math.max(maxDimension, box.z[1]-box.z[0]));
-			this.camera.position.z = this.light.position.z = maxDimension*2;
+			this.maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);	
+			this.maxDimension = Math.ceil(Math.max(this.maxDimension, box.z[1]-box.z[0]));
+			if(this.vslider) {
+				this.vslider.setMinimum(-1*this.maxDimension); 
+				this.vslider.setMaximum(this.maxDimension*1.5);
+				this.vslider.setValue(this.maxDimension*0.25);
+			}
+			this.camera.position.z = this.light.position.z = this.maxDimension*2;
 			this.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
 			this.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
-			
-			//vslider.setMinimum(-maxDimension);
-			//vslider.setMaximum(maxDimension*1.5);
-			//vslider.setValue(maxDimension*0.25);
 		}
 		this.scene.add(this.mesh);
 }
@@ -257,7 +270,7 @@ viewController.prototype.onMouseUp = function (event) {
 
 }
 
-/*
+
 viewController.prototype.onMouseScroll = function (event) {
 
 	var vc = vc_byid[event.target.parentNode.id];
@@ -265,17 +278,17 @@ viewController.prototype.onMouseScroll = function (event) {
 	event.preventDefault();
 	
 	vc.wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
-	vslider.setValue(vslider.getValue() + (wheelData > 0 ? 0.05 : -0.05) * (vslider.getMaximum() - vslider.getMinimum()));
+	vc.vslider.setValue(vc.vslider.getValue() + (vc.wheelData > 0 ? 0.05 : -0.05) * (vc.vslider.getMaximum() - vc.vslider.getMinimum()));
 
 }
-*/
-/*
-function onSliderChange() {
 
-	camera.position.z = maxDimension*2 - this.getValue();
+
+viewController.prototype.onSliderChange = function (event) {
+	
+	this.camera.position.z = this.maxDimension*2 - this.vslider.getValue();
 
 }
-*/
+
 
 /*
 viewController.prototype.onTouchStart = function (event) {
@@ -318,9 +331,9 @@ function onTouchEnd(event) {
 	mesh.material.wireframe = false;
 }
 */
-/*
 
-function onContextMenu(event) {
+
+viewController.prototype.onContextMenu = function (event) {
 	
 	event = event ? event : document.event;
 	
@@ -328,7 +341,7 @@ function onContextMenu(event) {
 	event.preventDefault();
 	return false;
 }
-*/
+
 
 /*
 function Inertia() {
