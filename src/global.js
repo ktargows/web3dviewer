@@ -23,7 +23,10 @@ function web3dviewer_init() {
 	for (var i=0; i < components.length; i++) {
 		var element = components.item(i);
 		var id = element.id;
-		if( !id ){ id = "web3dviewer"+i; };
+		if( !id ){ 
+			id = "web3dviewer"+i;
+			element.id = id;
+		 };
 		var mesh = element.getAttribute("mesh");
 		if( !mesh ){ mesh = "cube"; };
 		var vc = new viewController(id, mesh);
