@@ -34,7 +34,7 @@ viewController.prototype.loadBaseMesh = function () {
 					vc.mesh.geometry.vertices[i].position.y -= offset_y;
 					vc.mesh.geometry.vertices[i].position.z -= offset_z;
 				}
-			vc.setParameters();
+			vc.initView();
 
 			} else {
 				alert('Server connection error.');
