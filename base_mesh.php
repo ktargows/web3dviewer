@@ -3,7 +3,8 @@
 $vertices = array();
 $faces = array();
 
-$lines = file("meshes/leg-surface.pgrid");
+#$lines = file("meshes/leg-surface.pgrid");
+$lines = file("meshes/head-infinitylevel.pgrid");
 
 $lv = preg_grep( "/\[\d+\]/", $lines);
 $lf = preg_grep( "/ElmT3n2D/", $lines);

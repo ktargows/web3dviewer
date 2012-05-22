@@ -42,12 +42,12 @@ viewController.prototype.init = function () {
 			   NEAR,
 			   FAR );
 	
-//	stats = new Stats();
-//	stats.domElement.style.position = 'absolute';
-//	stats.domElement.style.top = '0px';
-//	stats.domElement.style.left = '0px';
-//	document.getElementById("web3dviewer").appendChild( stats.domElement );
-	
+/*	this.stats = new Stats();
+	this.stats.domElement.style.position = 'absolute';
+	this.stats.domElement.style.top = '0px';
+	this.stats.domElement.style.left = '0px';
+	document.getElementById(this.id).appendChild( this.stats.domElement );
+*/	
 	
 	this.scene = new THREE.Scene();
 	this.scene.add(this.camera);
@@ -58,7 +58,10 @@ viewController.prototype.init = function () {
 	this.createPanel();
 	
 	this.loadMesh();
-	this.setParameters();
+
+	this.scene.add(this.mesh);
+
+	this.initView();
 
 	document.getElementById(this.id).appendChild( this.renderer.domElement );
 	
@@ -193,9 +196,9 @@ viewController.prototype.createPanel = function () {
 
 }
 
-viewController.prototype.setParameters = function () {
+viewController.prototype.initView = function () {
 		
-		this.mesh.doubleSided = true;
+		this.mesh.doubleSided = false;
 		this.mesh.geometry.computeBoundingBox();
 		var box = this.mesh.geometry.boundingBox;
 		if(box) {
@@ -210,7 +213,7 @@ viewController.prototype.setParameters = function () {
 			this.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
 			this.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
 		}
-		this.scene.add(this.mesh);
+
 }
 
 viewController.prototype.render = function () {
@@ -218,7 +221,7 @@ viewController.prototype.render = function () {
 		this.rotateMesh();
 	}
 	this.renderer.render(this.scene, this.camera);
-//	stats.update();
+//	this.stats.update();
 }
 
 
