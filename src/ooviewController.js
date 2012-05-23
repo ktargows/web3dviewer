@@ -96,7 +96,7 @@ viewController.prototype.loadMesh = function () {
 			}.bind(this) );
 	} else {
 		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
-		this.loadBaseMesh();
+		this.loadBaseMesh(this.mesh_name);
 	}
 		
 	

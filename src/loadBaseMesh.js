@@ -1,6 +1,6 @@
-viewController.prototype.loadBaseMesh = function () {
+viewController.prototype.loadBaseMesh = function (mesh) {
 	var http_request = new XMLHttpRequest();
-	var url = "base_mesh.php"; 
+	var url = "base_mesh.php?mesh="+mesh; 
 	var vc_id = ""+this.id;
 	http_request.onreadystatechange = handle_json.bind(this);
 	http_request.open("GET", url, true);

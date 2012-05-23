@@ -6,8 +6,9 @@ $nodesplits = array();
 
 $offset = intval($_REQUEST['offset']);
 $length = intval($_REQUEST['length']);
+$mesh = $_REQUEST['mesh']);
 
-$lines = file("meshes/head-infinitylevel.pgrid");
+$lines = file("meshes/$mesh.pgrid");
 
 $lns = preg_grep( "/NodeSplit/", $lines);
 
