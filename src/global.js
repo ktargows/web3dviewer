@@ -42,7 +42,7 @@ function web3dviewer_init() {
 
 var VIEW_ANGLE = 60,
 NEAR = 0.1,
-FAR = 100;
+FAR = 200;
 
 /*
 var CAMERA_MOVE = 5;
