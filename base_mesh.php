@@ -2,7 +2,10 @@
 
 $vertices = array();
 $faces = array();
-$mesh = $_REQUEST['mesh'];
+if (isset($_REQUEST['mesh']) == false)
+	$mesh = "leg";
+else
+	$mesh = $_REQUEST['mesh'];
 #$lines = file("meshes/leg-surface.pgrid");
 $lines = file("meshes/$mesh.pgrid");
 
