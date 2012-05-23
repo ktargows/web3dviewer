@@ -5,6 +5,7 @@ Finite element mesh (GridFE):
   Number of space dim. =  3
   Number of elements   =  3996
   Number of nodes      =  2000
+  Bounding box         =  (26.597195, 14.997090, 3.350012 : 48.428322, 38.790337, 60.009541)
 
   All elements are of the same type : dpTRUE
   Max number of nodes in an element: 4
