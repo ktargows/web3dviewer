@@ -109,88 +109,58 @@ viewController.prototype.createPanel = function () {
 	container.className = "panel";
 	container.style.cssText = 'z-index: 10; top: 0px; float: left; position: relative;';
 	
-	
-
-	var tab1 = document.createElement('table');
-	var tab2 = document.createElement('table');
-	var tr1 = document.createElement('tr');
-	var tr2 = document.createElement('tr');
-	var td = document.createElement('td');
-	var arrbutton = document.createElement('button');
 	var divslider = document.createElement('div');
 	var divsliderinput = document.createElement('input');
 	
 	divslider.className = "slider";
 	divslider.id = "slider-vertical-"+this.id;
-	
+	divslider.style.height = document.getElementById(this.id).style.height;
+
 	divsliderinput.id = "slider-vertical-input-"+this.id;
 	divsliderinput.className = "slider-input";
 	divslider.appendChild(divsliderinput);
 	
-	td.appendChild(divslider);
-	tr1.appendChild(td);
-	
-	td = document.createElement('td');
-	tr2.appendChild(td);
-	td = document.createElement('td');
+	var arrbutton;
+	arrbutton = document.createElement('button');
 	arrbutton.onclick = this.moveCamera;
-	arrbutton.direction = 'up'; 
+	arrbutton.direction = 'up';
 	arrbutton.innerHTML = "&uarr;";
-	td.appendChild(arrbutton);
-	tr2.appendChild(td);
-	td = document.createElement('td');
-	tr2.appendChild(td);
-	tab2.appendChild(tr2);
-	tr2 = document.createElement('tr');
-	td = document.createElement('td');
-	arrbutton = document.createElement('button');
-	arrbutton.onclick = this.moveCamera;
-	arrbutton.innerHTML = "&larr;";
-	arrbutton.direction = 'left';
-	td.appendChild(arrbutton);
-	tr2.appendChild(td);
-	td = document.createElement('td');
-	tr2.appendChild(td);
-	td = document.createElement('td');
-	arrbutton = document.createElement('button');
-	arrbutton.onclick = this.moveCamera;
-	arrbutton.innerHTML = "&rarr;";
-	arrbutton.direction = 'right';
-	td.appendChild(arrbutton);
-	tr2.appendChild(td);
-	tab2.appendChild(tr2);
-	tr2 = document.createElement('tr');
-	td = document.createElement('td');
-	tr2.appendChild(td);
-	td = document.createElement('td');
-	arrbutton = document.createElement('button');
-	arrbutton.onclick = this.moveCamera;
-	arrbutton.innerHTML = "&darr;";
-	arrbutton.direction = 'down';
-	td.appendChild(arrbutton);
-	tr2.appendChild(td);
-	td = document.createElement('td');
-	tr2.appendChild(td);
-	tab2.appendChild(tr2);
+	arrbutton.style.cssText='z-index: 10; position: absolute; top: 0px; left: 45%';
+	document.getElementById(this.id).appendChild(arrbutton); 
 	
-	td = document.createElement('td');
-	td.appendChild(tab2);
+	arrbutton = document.createElement('button');
+	arrbutton.onclick = this.moveCamera;
+	arrbutton.direction = 'down';
+	arrbutton.innerHTML = "&darr;";
+	arrbutton.style.cssText='z-index: 10; position: absolute; bottom: 0px; left: 45%';
+	document.getElementById(this.id).appendChild(arrbutton);
+	arrbutton = document.createElement('button');
+	arrbutton.onclick = this.moveCamera;
+	arrbutton.direction = 'left';
+	arrbutton.innerHTML = "&larr;";
+	arrbutton.style.cssText='z-index: 10; position: absolute; left: 30px; top: 45%';
+	document.getElementById(this.id).appendChild(arrbutton);
+	
+	arrbutton = document.createElement('button');
+	arrbutton.onclick = this.moveCamera;
+	arrbutton.direction = 'right';
+	arrbutton.innerHTML = "&rarr;";
+	arrbutton.style.cssText='z-index: 10; position: absolute; top: 45%; right: 0px';
+	document.getElementById(this.id).appendChild(arrbutton);
+	
 	var home_button = document.createElement( 'button' );
 	home_button.innerHTML="Reset view";
-	home_button.style.cssText = 'color:#000000';
+	home_button.style.cssText = 'color:#000000; position: absolute; left: 70%; top: 0px; z-index: 10;';
 	home_button.onclick = this.Home;
-	td.appendChild(home_button);
-	tr1.appendChild(td);
-	tab1.appendChild(tr1);
-	
-	container.appendChild( tab1);
-	
 
+	
+	container.appendChild(divslider);
+	document.getElementById(this.id).appendChild(home_button);
 	
 	this.vslider = new Slider(divslider, divsliderinput, "vertical");
 	this.vslider.onchange = this.onSliderChange.bind(this);
-
 	document.getElementById(this.id).appendChild( container );
+	
 
 //<button onclick="Home(); return false;">Reset view</button><br />
 
@@ -431,7 +401,7 @@ function Inertia() {
 
 viewController.prototype.Home = function() {
 
-	var vc = vc_byid[this.parentNode.parentNode.parentNode.parentNode.parentNode.id];
+	var vc = vc_byid[this.parentNode.id];
 	vc.targetRotationX = vc.targetRotationY = vc.mouseDownRotationX = vc.mouseDownRotationY = vc.mouseDownX = vc.mouseDownY = vc.mouseX = vc.mouseY = vc.slowRotationX = vc.slowRotationY = 0;
 	vc.mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
 	vc.vslider.setValue(vc.maxDimension*0.25);
@@ -446,7 +416,7 @@ viewController.prototype.Home = function() {
 
 viewController.prototype.moveCamera = function(direction) {
 
-	var vc = vc_byid[this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id];//	alert("TU");
+	var vc = vc_byid[this.parentNode.id];
 	switch(this.direction) {
 		
 		case "up": vc.camera.position.y -= vc.CAMERA_MOVE; break;
