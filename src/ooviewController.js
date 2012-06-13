@@ -1,8 +1,8 @@
 
-viewController = function(id, mesh_name) {
+viewController = function(id, mesh_name, progressive) {
   this.id = id;
   this.mesh_name = mesh_name;
-
+  this.progressive = progressive;
   this.mouseDownX = 0; 
   this.mouseDownY = 0;
   this.windowHalfX = window.innerWidth/2;
@@ -81,25 +81,33 @@ viewController.prototype.init = function () {
 	this.render();
 } 
 
+viewController.prototype.loadMeshSuccess = function() {
+	console.info("Mesh loaded " + this.mesh.geometry.vertices.length + " vertices");
+	console.info("" + this.id + " is progressive? " + this.progressive);
+	if (this.progressive)
+		this.initProgressive();
+}
 
+viewController.prototype.loadMeshError = function() {
+	console.error("Error while fetching base mesh for " + this.id);
+}
 
 viewController.prototype.loadMesh = function () {
-
 	if(this.mesh_name == "cube") {
 		this.mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
+		this.loadMeshSuccess();
 	} else if(this.mesh_name == "disney") {
 		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
 		loader = new THREE.JSONLoader();
 		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
 			this.mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
 			this.setParameters();
+			this.loadMeshSuccess();
 			}.bind(this) );
 	} else {
 		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
-		this.loadBaseMesh(this.mesh_name);
+		this.loadBaseMesh(this.mesh_name, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
 	}
-		
-	
 } 
 
 viewController.prototype.createPanel = function () {
@@ -193,7 +201,6 @@ viewController.prototype.render = function () {
 	this.renderer.render(this.scene, this.camera);
 //	this.stats.update();
 }
-
 
 viewController.prototype.rotateMesh = function () {
 

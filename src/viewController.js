@@ -179,7 +179,6 @@ function animate() {
 				} 
 				if(refine && !loaded) {
 					refineMesh();
-					//setParameters();
 				}
 				timeLastRefine = time;
 				framescounter = 0;

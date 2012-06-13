@@ -29,7 +29,8 @@ function web3dviewer_init() {
 		 };
 		var mesh = element.getAttribute("mesh");
 		if( !mesh ){ mesh = "cube"; };
-		var vc = new viewController(id, mesh);
+		var progressive = (element.getAttribute("progressive") === 'true');
+		var vc = new viewController(id, mesh, progressive);
 		vc_byid[element.id] = vc;
 		vc_table.push(vc);
 

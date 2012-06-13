@@ -6,7 +6,7 @@ $nodesplits = array();
 
 $offset = intval($_REQUEST['offset']);
 $length = intval($_REQUEST['length']);
-$mesh = $_REQUEST['mesh']);
+$mesh = $_REQUEST['mesh'];
 
 $lines = file("meshes/$mesh.pgrid");
 

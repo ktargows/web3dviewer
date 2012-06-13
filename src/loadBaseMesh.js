@@ -1,4 +1,4 @@
-viewController.prototype.loadBaseMesh = function (mesh) {
+viewController.prototype.loadBaseMesh = function (mesh, onsuccess, onerror) {
 	var http_request = new XMLHttpRequest();
 	var url = "base_mesh.php?mesh="+mesh; 
 	var vc_id = ""+this.id;
@@ -34,13 +34,13 @@ viewController.prototype.loadBaseMesh = function (mesh) {
 					vc.mesh.geometry.vertices[i].position.y -= offset_y;
 					vc.mesh.geometry.vertices[i].position.z -= offset_z;
 				}
-			vc.initView();
-
+				vc.initView();
+				onsuccess();
 			} else {
 				alert('Server connection error.');
+				onerror();
 			}
 		http_request = null;
 		}
 	}
 }
-
