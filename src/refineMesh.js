@@ -2,6 +2,7 @@ var splits = [];
 var offset = 0;
 var length = 10;
 var error = false;
+var sid = 0;
 
 viewController.prototype.adjacentFaces = function(a) {
     var faces = [];
@@ -47,14 +48,18 @@ viewController.prototype.refine = function() {
 		var fail = this.splitNode(split.a, split.b, split.c0, split.c1, split.d,
 			  split.cfg0, split.cfg1, split.x, split.y, split.z);
 		if (fail) {
-			console.error("Error while splitting for " + this.id);
-		        console.error("Turning off progressive loading for this component");
+			console.error("Error while splitting for " + this.id +
+		        "\nTurning off progressive loading for this component" +
+			"\nOffending split operation (nr " + sid + "): " + JSON.stringify(split));
 		        clearInterval(this.refiner);
 			return;
 		}
+		sid = sid +1;
 	}
 	console.info("Done");
-	setTimeout(this.refine.bind(this), 1000); // retry in 100ms
+	this.updateMesh();
+	if (this.progressive)
+		setTimeout(this.refine.bind(this), 1000); // retry in 100ms
 }
 
 viewController.prototype.splitNode = function(a, b, c0, c1, d, cfg0, cfg1, x, y, z) {
@@ -148,7 +153,11 @@ viewController.prototype.splitNode = function(a, b, c0, c1, d, cfg0, cfg1, x, y,
 
 viewController.prototype.initProgressive = function() {
 	this.refiner = setInterval(function() {
-		this.refineMesh(this.mesh_name, this.refineMeshSuccess.bind(this), this.refineMeshError.bind(this));
+		this.refineMesh(this.mesh_name,
+			this.refineMeshSuccess.bind(this),
+			this.refineMeshError.bind(this),
+			this.refineMeshDone.bind(this)
+		);
 	}.bind(this), 1000);
 	setTimeout(this.refine.bind(this), 2000)
 }
@@ -158,9 +167,16 @@ viewController.prototype.refineMeshError = function(response) {
 	console.error("Error while fetching refinements for " + this.id);
 	console.error("Turning off progressive loading for this component");
 	clearInterval(this.refiner);
+	this.progressive = false;
+}
+viewController.prototype.refineMeshDone = function(response) {
+	console.info("Done fetching refinements for " + this.id);
+	console.info("Turning off progressive loading for this component");
+	clearInterval(this.refiner);
+	this.progressive = false;
 }
 
-viewController.prototype.refineMesh = function (mesh, onsuccess, onerror) {
+viewController.prototype.refineMesh = function (mesh, onsuccess, onerror, onloaded) {
 	console.info("Fetching refinements ");
 	var http_request = new XMLHttpRequest();
 	var url = "refine_mesh.php?mesh="+mesh+"&offset="+offset+"&length="+length; 
@@ -183,11 +199,11 @@ viewController.prototype.refineMesh = function (mesh, onsuccess, onerror) {
 				}
 
 				if (json.length == 0)
-					loaded = true;
+					onloaded()
 				offset += json.length;
-				onsuccess(http_request.responseText);
+				onsuccess();
 			} else {
-				onerror(http_request.responseText);
+				onerror();
 				console.error("Error");
 			}
 			http_request = null;

@@ -77,13 +77,37 @@ viewController.prototype.init = function () {
 	this.renderer.domElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
 
 
-	
+
 	this.render();
 } 
+
+viewController.prototype.centerMesh = function() {
+	var vc = this;
+	var offset_x = (vc.mesh.geometry.boundingBox.x[0]+vc.mesh.geometry.boundingBox.x[1])/2; 
+	var offset_y = (vc.mesh.geometry.boundingBox.y[0]+vc.mesh.geometry.boundingBox.y[1])/2; 
+	var offset_z = (vc.mesh.geometry.boundingBox.z[0]+vc.mesh.geometry.boundingBox.z[1])/2; 
+	for (i = 0; i< vc.mesh.geometry.vertices.length; i++ ){ 
+		vc.mesh.geometry.vertices[i].position.x -= offset_x;
+		vc.mesh.geometry.vertices[i].position.y -= offset_y;
+		vc.mesh.geometry.vertices[i].position.z -= offset_z;
+	}
+}
+
+viewController.prototype.updateMesh = function() {
+	var vc = this;
+	vc.mesh.geometry.computeCentroids();
+	vc.mesh.geometry.computeFaceNormals();
+	vc.mesh.geometry.computeBoundingBox();
+	vc.mesh.geometry.dynamic = true;
+}
 
 viewController.prototype.loadMeshSuccess = function() {
 	console.info("Mesh loaded " + this.mesh.geometry.vertices.length + " vertices");
 	console.info("" + this.id + " is progressive? " + this.progressive);
+	
+	this.updateMesh();
+	this.centerMesh();	
+	// Center mesh
 	if (this.progressive)
 		this.initProgressive();
 }
