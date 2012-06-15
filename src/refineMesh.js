@@ -4,46 +4,10 @@ var length = 10;
 var error = false;
 var sid = 0;
 
-viewController.prototype.adjacentFaces = function(a) {
-    var faces = [];
-    var noFaces = this.mesh.geometry.faces.length;
-    var faceIdx;
-    
-    for (faceIdx=0; faceIdx<noFaces; faceIdx++) {
-        var p = this.mesh.geometry.faces[faceIdx].a;
-        var q = this.mesh.geometry.faces[faceIdx].b;
-        var r = this.mesh.geometry.faces[faceIdx].c;
-
-        var commonNodes = 0;
-
-        if (p == a) commonNodes++;
-        if (q == a) commonNodes++;
-        if (r == a) commonNodes++;
-
-        if (commonNodes > 0) faces.push(faceIdx);
-    }
-
-    return faces;
-}
-
-viewController.prototype.reconnectNode = function(a, b) {
-   for(var i=0; i<this.mesh.geometry.faces.length; i++) {
-       if (this.mesh.geometry.faces[i].a == a) this.mesh.geometry.faces[i].a = b;
-       if (this.mesh.geometry.faces[i].b == a) this.mesh.geometry.faces[i].b = b;
-       if (this.mesh.geometry.faces[i].c == a) this.mesh.geometry.faces[i].c = b;
-   }
-}
-
-viewController.prototype.swapNodes = function(a, b) {
-   var tmp = this.mesh.geometry.vertices[a];
-   this.mesh.geometry.vertices[a] = this.mesh.geometry.vertices[b];
-   this.mesh.geometry.vertices[b] = tmp;
-}
-
 viewController.prototype.refine = function() {
-	console.info("Refining " + splits.length + " splits");
+	//console.debug("Refining " + splits.length + " splits");
 	while (splits.length > 0) {
-		console.info(""+splits.length+" splits left");
+		//console.debug(""+splits.length+" splits left");
 		var split = splits.pop();
 		var fail = this.splitNode(split.a, split.b, split.c0, split.c1, split.d,
 			  split.cfg0, split.cfg1, split.x, split.y, split.z);
@@ -56,20 +20,41 @@ viewController.prototype.refine = function() {
 		}
 		sid = sid +1;
 	}
-	console.info("Done");
+	//console.debug("Done");
 	this.updateMesh();
 	if (this.progressive)
 		setTimeout(this.refine.bind(this), 1000); // retry in 100ms
 }
 
 viewController.prototype.splitNode = function(a, b, c0, c1, d, cfg0, cfg1, x, y, z) {
-    var faces = this.adjacentFaces(a);
+    var faces = [];
+    
+    for (var faceIdx=0; faceIdx<this.mesh.geometry.faces.length; faceIdx++) {
+        var p = this.mesh.geometry.faces[faceIdx].a;
+        var q = this.mesh.geometry.faces[faceIdx].b;
+        var r = this.mesh.geometry.faces[faceIdx].c;
+
+        var commonNodes = 0;
+
+        if (p == a) commonNodes++;
+        if (q == a) commonNodes++;
+        if (r == a) commonNodes++;
+
+        if (commonNodes > 0) faces.push(faceIdx);
+    }
+    
     var n0idx = this.mesh.geometry.vertices.length;
     var f0idx = this.mesh.geometry.faces.length;
     var f1idx = this.mesh.geometry.faces.length+1; 
+    var fs = [];
+    for (var i=0; i<this.mesh.geometry.faces.length; i++) {
+       var fid = i;//faces[i];
+       if (this.mesh.geometry.faces[fid].a == b) { this.mesh.geometry.faces[fid].a = n0idx; fs.push(fid); continue; } //
+       if (this.mesh.geometry.faces[fid].b == b) { this.mesh.geometry.faces[fid].b = n0idx; fs.push(fid); continue; } //
+       if (this.mesh.geometry.faces[fid].c == b) { this.mesh.geometry.faces[fid].c = n0idx; fs.push(fid); continue; } //
+    }
     
-    this.reconnectNode(b, n0idx);
-    
+   // console.debug("Adjancent:\n" + faces.join() + "\n" + fs.join());
     this.mesh.geometry.vertices.push(new THREE.Vertex(new THREE.Vector3(0.0, 0.0, 0.0)));
     var face;
     switch(cfg0) {
@@ -91,7 +76,9 @@ viewController.prototype.splitNode = function(a, b, c0, c1, d, cfg0, cfg1, x, y,
     }
     this.mesh.geometry.faces.push(face);
 
-    this.swapNodes(b, n0idx);
+    var tmp = this.mesh.geometry.vertices[b];
+    this.mesh.geometry.vertices[b] = this.mesh.geometry.vertices[n0idx];
+    this.mesh.geometry.vertices[n0idx] = tmp;
 
     var tries = faces.length;
     var mi = c0;
@@ -166,18 +153,22 @@ viewController.prototype.refineMeshSuccess = function(response) { }
 viewController.prototype.refineMeshError = function(response) {
 	console.error("Error while fetching refinements for " + this.id);
 	console.error("Turning off progressive loading for this component");
-	clearInterval(this.refiner);
-	this.progressive = false;
+	this.stopRefinement();
 }
+
 viewController.prototype.refineMeshDone = function(response) {
 	console.info("Done fetching refinements for " + this.id);
 	console.info("Turning off progressive loading for this component");
+	this.stopRefinement();
+}
+
+viewController.prototype.stopRefinement = function() {
 	clearInterval(this.refiner);
 	this.progressive = false;
 }
 
 viewController.prototype.refineMesh = function (mesh, onsuccess, onerror, onloaded) {
-	console.info("Fetching refinements ");
+	//console.debug("Fetching refinements ");
 	var http_request = new XMLHttpRequest();
 	var url = "refine_mesh.php?mesh="+mesh+"&offset="+offset+"&length="+length; 
 	var vc_id = ""+this.id;
@@ -198,8 +189,10 @@ viewController.prototype.refineMesh = function (mesh, onsuccess, onerror, onload
 					splits.unshift({'a':a,'b':b,'c0':c0,'c1':c1,'d':d,'cfg0':cfg0,'cfg1':cfg1,'x':x,'y':y,'z':z});
 				}
 
-				if (json.length == 0)
-					onloaded()
+				if (json.length == 0) {
+					console.info("No more refinements. Model is fully loaded.");
+					onloaded();
+				}
 				offset += json.length;
 				onsuccess();
 			} else {
