@@ -3,6 +3,8 @@ var offset = 0;
 var length = 10;
 var error = false;
 var sid = 0;
+var splitFetchRate = 2000;
+var refinementRate = 200;
 
 viewController.prototype.refine = function() {
 	//console.debug("Refining " + splits.length + " splits");
@@ -23,7 +25,7 @@ viewController.prototype.refine = function() {
 	//console.debug("Done");
 	this.updateMesh();
 	if (this.progressive)
-		setTimeout(this.refine.bind(this), 1000); // retry in 100ms
+		setTimeout(this.refine.bind(this), refinementRate); // retry in 100ms
 }
 
 viewController.prototype.splitNode = function(a, b, c0, c1, d, cfg0, cfg1, x, y, z) {
@@ -139,14 +141,14 @@ viewController.prototype.splitNode = function(a, b, c0, c1, d, cfg0, cfg1, x, y,
 }
 
 viewController.prototype.initProgressive = function() {
+	setTimeout(this.refine.bind(this), refinementRate);
 	this.refiner = setInterval(function() {
 		this.refineMesh(this.mesh_name,
 			this.refineMeshSuccess.bind(this),
 			this.refineMeshError.bind(this),
 			this.refineMeshDone.bind(this)
 		);
-	}.bind(this), 1000);
-	setTimeout(this.refine.bind(this), 2000)
+	}.bind(this), splitFetchRate);
 }
 
 viewController.prototype.refineMeshSuccess = function(response) { }
