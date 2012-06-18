@@ -111,13 +111,9 @@ viewController.prototype.loadMeshSuccess = function() {
 	
 	this.updateMesh();
 	this.centerMesh();
-	if (this.progressive) {
+	this.initView();
+	if (this.progressive)
 		this.initProgressive();
-		//setTimeout(function() {
-		//	console.warn("Stopped refinement");
-		//	this.stopRefinement()
-		//}.bind(this), 4000); // Stop refinement after 4s. This way we could stop refinement when FPS is too low.
-	}
 }
 
 viewController.prototype.loadMeshError = function() {
