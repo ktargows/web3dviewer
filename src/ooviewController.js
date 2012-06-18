@@ -57,7 +57,7 @@ viewController.prototype.init = function () {
 	
 	this.createPanel();
 	
-	this.loadMesh();
+	this.initMesh();
 
 	this.scene.add(this.mesh);
 
@@ -120,22 +120,9 @@ viewController.prototype.loadMeshError = function() {
 	console.error("Error while fetching base mesh for " + this.id);
 }
 
-viewController.prototype.loadMesh = function () {
-	if(this.mesh_name == "cube") {
-		this.mesh = new THREE.Mesh(new THREE.CubeGeometry(20,20,20), new THREE.MeshNormalMaterial());
-		this.loadMeshSuccess();
-	} else if(this.mesh_name == "disney") {
-		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
-		loader = new THREE.JSONLoader();
-		loader.load('meshes/WaltHeadLo.js', function ( geometry ) {
-			this.mesh = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial( { overdraw: true } ) );
-			this.setParameters();
-			this.loadMeshSuccess();
-			}.bind(this) );
-	} else {
-		this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
-		this.loadBaseMesh(this.mesh_name, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
-	}
+viewController.prototype.initMesh = function () {
+	this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
+	this.loadBaseMesh(this.mesh_name, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
 } 
 
 viewController.prototype.createPanel = function () {
