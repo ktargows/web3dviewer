@@ -106,8 +106,7 @@ viewController.prototype.loadMeshSuccess = function() {
 	console.info("" + this.id + " is progressive? " + this.progressive);
 	
 	this.updateMesh();
-	this.centerMesh();	
-	// Center mesh
+	this.centerMesh();
 	if (this.progressive) {
 		this.initProgressive();
 		//setTimeout(function() {
@@ -209,7 +208,7 @@ viewController.prototype.initView = function () {
 		this.mesh.geometry.computeBoundingBox();
 		var box = this.mesh.geometry.boundingBox;
 		if(box) {
-			this.maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);	
+			this.maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
 			this.maxDimension = Math.ceil(Math.max(this.maxDimension, box.z[1]-box.z[0]));
 			if(this.vslider) {
 				this.vslider.setMinimum(-1*this.maxDimension); 

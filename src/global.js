@@ -29,10 +29,12 @@ function web3dviewer_init() {
 		 };
 		var mesh = element.getAttribute("mesh");
 		if( !mesh ){ mesh = "cube"; };
-		var progressive = (element.getAttribute("progressive") === 'true');
+		var progressive = (element.getAttribute("progressive") != null);
 		var vc = new viewController(id, mesh, progressive);
 		vc_byid[element.id] = vc;
 		vc_table.push(vc);
+
+		vc.noinertia = (element.getAttribute("noinertia") != null);
 
 		vc.width = parseInt(element.style.width);
 		vc.height = parseInt(element.style.height);
