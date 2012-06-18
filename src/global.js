@@ -23,17 +23,20 @@ function web3dviewer_init() {
 	for (var i=0; i < components.length; i++) {
 		var element = components.item(i);
 		var id = element.id;
-		if( !id ){ 
+		if( !id ){
 			id = "web3dviewer"+i;
 			element.id = id;
-		 };
+		};
 		var mesh = element.getAttribute("mesh");
 		if( !mesh ){ mesh = "cube"; };
-		var progressive = (element.getAttribute("progressive") != null);
-		var vc = new viewController(id, mesh, progressive);
+
+		var master = element.getAttribute("master");
+
+		var vc = new viewController(id, mesh, master);
 		vc_byid[element.id] = vc;
 		vc_table.push(vc);
 
+		vc.progressive = (element.getAttribute("progressive") != null);
 		vc.noinertia = (element.getAttribute("noinertia") != null);
 
 		vc.width = parseInt(element.style.width);

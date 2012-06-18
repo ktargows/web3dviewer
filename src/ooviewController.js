@@ -1,8 +1,9 @@
 
-viewController = function(id, mesh_name, progressive) {
+viewController = function(id, mesh_name, master) {
   this.id = id;
   this.mesh_name = mesh_name;
-  this.progressive = progressive;
+  this.master = master;
+  this.progressive = true;
   this.mouseDownX = 0; 
   this.mouseDownY = 0;
   this.windowHalfX = window.innerWidth/2;
@@ -57,7 +58,12 @@ viewController.prototype.init = function () {
 	
 	this.createPanel();
 	
-	this.initMesh();
+//	if(this.master){
+	if(0){
+		this.mesh = vc_byid[this.master].mesh;
+	} else {
+		this.initMesh();
+	}
 
 	this.scene.add(this.mesh);
 
@@ -75,8 +81,6 @@ viewController.prototype.init = function () {
 	this.renderer.domElement.addEventListener('touchmove', this.onTouchMove.bind(this), false);
 	this.renderer.domElement.addEventListener('touchend', this.onTouchEnd.bind(this), false);
 	this.renderer.domElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-
-
 
 	this.render();
 } 
