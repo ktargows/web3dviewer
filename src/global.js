@@ -8,14 +8,26 @@ function isWebGLSupported() {
 }
 
 function animate() {
-        requestAnimationFrame(animate);
+	requestAnimationFrame(animate);
 	for (var i in vc_table){
 		vc_table[i].render();
+	}
+	fps++;
+	if( (Date.now() - start_time) > 1000 ){ 
+		if( fps < 30){
+			for (var i in vc_table){
+				vc_table[i].progressive = false;
+			}
+		}
+		fps = 0;
+		start_time = Date.now();
 	}
 }
 
 var vc_byid = [];
 var vc_table = [];
+var start_time;
+var fps;
 
 function web3dviewer_init() {
 
@@ -43,6 +55,7 @@ function web3dviewer_init() {
 		vc.height = parseInt(element.style.height);
 		vc.init();
 	}
+	start_time = Date.now();
 	animate();
 }
 

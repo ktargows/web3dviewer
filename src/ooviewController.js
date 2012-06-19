@@ -15,7 +15,7 @@ viewController = function(id, mesh_name, master) {
   this.mouseDownRotationX = 0;
   this.mouseDownRotationY = 0;
   this.wheelData = 0;
-  this.noinertia = 0;
+  this.noinertia = false;
   this.newrotationmatrix;
   this.newrotation;
   this.slowRotationX = 0;
