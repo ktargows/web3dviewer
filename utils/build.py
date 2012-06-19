@@ -18,9 +18,10 @@ COMMON_FILES = [
 'libs/slider.js',
 'libs/Stats.js',
 'libs/timer.js',
-'viewController.js',
+'ooviewController.js',
 'refineMesh.js',
-'loadBaseMesh.js'
+'loadBaseMesh.js',
+'global.js'
 ]
 
 
