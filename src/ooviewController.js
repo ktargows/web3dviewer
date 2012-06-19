@@ -3,7 +3,10 @@ viewController = function(id, mesh_name, master) {
   this.id = id;
   this.mesh_name = mesh_name;
   this.master = master;
+  this.children = [];
   this.progressive = true;
+  this.noinertia = false;
+  this.view = "front";
   this.mouseDownX = 0; 
   this.mouseDownY = 0;
   this.windowHalfX = window.innerWidth/2;
@@ -15,7 +18,6 @@ viewController = function(id, mesh_name, master) {
   this.mouseDownRotationX = 0;
   this.mouseDownRotationY = 0;
   this.wheelData = 0;
-  this.noinertia = false;
   this.newrotationmatrix;
   this.newrotation;
   this.slowRotationX = 0;
@@ -23,7 +25,6 @@ viewController = function(id, mesh_name, master) {
   this.home = false;
   this.maxDimension = 0;
   this.CAMERA_MOVE = 5;
-  
   this.width = 300;
   this.height = 300;
 
@@ -58,12 +59,7 @@ viewController.prototype.init = function () {
 	
 	this.createPanel();
 	
-//	if(this.master){
-	if(0){
-		this.mesh = vc_byid[this.master].mesh;
-	} else {
-		this.initMesh();
-	}
+	this.initMesh();
 
 	this.scene.add(this.mesh);
 
@@ -122,7 +118,13 @@ viewController.prototype.loadMeshError = function() {
 
 viewController.prototype.initMesh = function () {
 	this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
-	this.loadBaseMesh(this.mesh_name, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
+	
+//	if(this.master){
+	if(0){
+		this.mesh.geometry = vc_byid[this.master].mesh.geometry;
+	} else {
+		this.loadBaseMesh(this.mesh_name, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
+	}
 } 
 
 viewController.prototype.createPanel = function () {
@@ -297,6 +299,10 @@ viewController.prototype.onMouseMove = function (event) {
 			vc.targetRotationY = (vc.mouseY - vc.mouseDownY)*0.2;
 			vc.mouseDownX = vc.mouseX;
 			vc.mouseDownY = vc.mouseY;
+			
+			if(vc.master || vc.children.length>0){
+				vc.updateChildrenRotation(vc);
+			}
 		}
 		else {
 			vc.targetRotationX = vc.mouseDownRotationX + (vc.mouseX - vc.mouseDownX)*0.02;
@@ -312,6 +318,24 @@ viewController.prototype.onMouseMove = function (event) {
 
 }
 
+viewController.prototype.updateChildrenRotation = function (vc) {
+
+	if( vc.children.length == 0){
+		vc_master = vc_byid[vc.master];
+	} else {
+		vc_master = vc;
+	}
+
+	vc_master.targetRotationX = vc.targetRotationX;
+	vc_master.targetRotationY = vc.targetRotationY;
+
+	for (var i in vc_master.children){
+		var vc_child = vc_byid[vc_master.children[i]];
+		vc_child.targetRotationX = vc.targetRotationX;
+		vc_child.targetRotationY = vc.targetRotationY;
+	}
+
+}
 
 viewController.prototype.onMouseUp = function (event) {
 

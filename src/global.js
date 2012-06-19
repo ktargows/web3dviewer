@@ -45,11 +45,17 @@ function web3dviewer_init() {
 		var master = element.getAttribute("master");
 
 		var vc = new viewController(id, mesh, master);
-		vc_byid[element.id] = vc;
+		vc_byid[id] = vc;
 		vc_table.push(vc);
+		
+		if( master ){
+			vc_byid[master].children.push(id);
+		}
 
 		vc.progressive = (element.getAttribute("progressive") != null);
 		vc.noinertia = (element.getAttribute("noinertia") != null);
+		vc.noinertia = (element.getAttribute("noinertia") != null);
+		vc.view  = element.getAttribute("view");
 
 		vc.width = parseInt(element.style.width);
 		vc.height = parseInt(element.style.height);

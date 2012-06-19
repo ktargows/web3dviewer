@@ -34,36 +34,11 @@
 
 		<link rel="StyleSheet" type="text/css" href="css/bluecurve.css" />
 	</head>
-	<body onload="init(false); animate();">
+	<body onload="web3dviewer_init();">
 <h1>web3dviewer</h1>
 <p>Demonstration example number 1</p>
-<div id="web3dviewer" style="position: absolute; top: 100px;">
 
-<!-- This should be moved into Javascript function similar to github.com/mrdoob/stats.js/ --> 
-	<div style="" id="panel">
-	<table>
-		<tr>
-			<td><div class="slider" id="slider-vertical" tabIndex="1">
-				<input class="slider-input" id="slider-vertical-input" name="slider-vertical-input" />
-			</div></td>
-			<td><table><tr>
-					<td></td>
-					<td><button onclick="moveCamera('up'); return false;">&uarr;</button></td>
-					<td></td>
-					</tr><tr>
-					<td><button onclick="moveCamera('left'); return false;">&larr;</button></td>
-					<td></td>
-					<td><button onclick="moveCamera('right'); return false;">&rarr;</button></td>
-					</tr><tr>
-					<td></td>
-					<td><button onclick="moveCamera('down'); return false;">&darr;</button></td>
-					</td></td>
-					</tr>	
-				</table>
-		<button onclick="Home(); return false;">Reset view</button><br />
-		Inertia: <input type="checkbox" name="inertia" onclick="Inertia(); "><br />
-		</td></tr>
-	</table>
+<div class="web3dviewer" mesh="box" view="front" noprogressive noinertia style="position: absolute; top: 100px; width: 400px; height: 500px; "></div>
 
 	</div>
 
