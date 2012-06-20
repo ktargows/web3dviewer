@@ -1,31 +1,32 @@
-var splits = [];
-var offset = 0;
-var length = 10;
-var error = false;
-var sid = 0;
-var splitFetchRate = 105;
-var refinementRate = 503;
+viewController.prototype.splits = [];
+viewController.prototype.offset = 0;
+viewController.prototype.length = 10;
+viewController.prototype.error = false;
+viewController.prototype.sid = 0;
+viewController.prototype.splitFetchRate = 105;
+viewController.prototype.refinementRate = 503;
 
 viewController.prototype.refine = function() {
 	//console.debug("Refining " + splits.length + " splits");
-	while (splits.length > 0) {
+	while (this.splits.length > 0) {
 		//console.debug(""+splits.length+" splits left");
-		var split = splits.pop();
+		var split = this.splits.pop();
+		console.info("Split nr " + split.a + ", " + split.b + " vc " + this.id);
 		var fail = this.splitNode(split.a, split.b, split.c0, split.c1, split.d,
 			  split.cfg0, split.cfg1, split.x, split.y, split.z);
 		if (fail) {
 			console.error("Error while splitting for " + this.id +
 		        "\nTurning off progressive loading for this component" +
-			"\nOffending split operation (nr " + sid + "): " + JSON.stringify(split));
+			"\nOffending split operation (nr " + this.sid + "): " + JSON.stringify(split));
 		        this.stopRefinement(); 
 			return;
 		}
-		sid = sid +1;
+		this.sid = this.sid +1;
 	}
 	//console.debug("Done");
 	this.updateMesh();
 	if (this.progressive)
-		setTimeout(this.refine.bind(this), refinementRate); // retry in 100ms
+		setTimeout(this.refine.bind(this), this.refinementRate); // retry in 100ms
 }
 
 viewController.prototype.splitNode = function(a, b, c0, c1, d, cfg0, cfg1, x, y, z) {
@@ -141,14 +142,14 @@ viewController.prototype.splitNode = function(a, b, c0, c1, d, cfg0, cfg1, x, y,
 }
 
 viewController.prototype.initProgressive = function() {
-	setTimeout(this.refine.bind(this), refinementRate);
+	setTimeout(this.refine.bind(this), this.refinementRate);
 	setTimeout(function() {
 		this.refineMesh(this.mesh_name,
 			this.refineMeshSuccess.bind(this),
 			this.refineMeshError.bind(this),
 			this.refineMeshDone.bind(this)
 		);
-	}.bind(this), splitFetchRate);
+	}.bind(this), this.splitFetchRate);
 }
 
 viewController.prototype.refineMeshSuccess = function(response) { }
@@ -172,7 +173,7 @@ viewController.prototype.stopRefinement = function() {
 viewController.prototype.refineMesh = function (mesh, onsuccess, onerror, onloaded) {
 	//console.debug("Fetching refinements ");
 	var http_request = new XMLHttpRequest();
-	var url = "refine_mesh.php?mesh="+mesh+"&offset="+offset+"&length="+length; 
+	var url = "refine_mesh.php?mesh="+mesh+"&offset="+this.offset+"&length="+this.length; 
 	var vc_id = ""+this.id;
 	http_request.onreadystatechange = handle_json.bind(this);
 	http_request.open("GET", url, true);
@@ -188,14 +189,14 @@ viewController.prototype.refineMesh = function (mesh, onsuccess, onerror, onload
 				for (i = 0; i < json.length; i++ ) {
 					a = json[i][0]; b = json[i][1]; c0 = json[i][2]; c1 = json[i][3]; d = json[i][4];
 					cfg0 = json[i][5]; cfg1 = json[i][6]; x = json[i][7]; y = json[i][8]; z = json[i][9];
-					splits.unshift({'a':a,'b':b,'c0':c0,'c1':c1,'d':d,'cfg0':cfg0,'cfg1':cfg1,'x':x,'y':y,'z':z});
+					this.splits.unshift({'a':a,'b':b,'c0':c0,'c1':c1,'d':d,'cfg0':cfg0,'cfg1':cfg1,'x':x,'y':y,'z':z});
 				}
 
 				if (json.length == 0) {
 					console.info("No more refinements. Model is fully loaded.");
 					onloaded();
 				}
-				offset += json.length;
+				this.offset += json.length;
 				onsuccess();
 				if (this.progressive)
 					setTimeout(function() {
@@ -204,7 +205,7 @@ viewController.prototype.refineMesh = function (mesh, onsuccess, onerror, onload
 								this.refineMeshError.bind(this),
 								this.refineMeshDone.bind(this)
 								);
-					}.bind(this), splitFetchRate);
+					}.bind(this), this.splitFetchRate);
 			} else {
 				onerror();
 				console.error("Error while fetching split");
