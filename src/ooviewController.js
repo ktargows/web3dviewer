@@ -221,6 +221,7 @@ viewController.prototype.render = function () {
 
 viewController.prototype.rotateMesh = function () {
 
+
 	this.newrotationmatrix = new THREE.Matrix4();
 	this.newrotation = new THREE.Vector3((this.targetRotationY-this.slowRotationY)*0.05,(this.targetRotationX-this.slowRotationX)*0.05,0);
 	this.newrotationmatrix.setRotationFromEuler(this.newrotation);
@@ -238,7 +239,22 @@ viewController.prototype.rotateMesh = function () {
 		this.mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
 		this.home = false;
 	}
-
+	
+	if(this.view)
+	{
+		this.newrotationmatrix = new THREE.Matrix4();
+		switch(this.view) {
+			case 'front': this.newrotation = new THREE.Vector3(0,0,0); break;
+			case 'left': this.newrotation = new THREE.Vector3(0,-1.58,0);break;
+			case 'right':this.newrotation = new THREE.Vector3(0,1.58,0); break;
+			case 'top':this.newrotation = new THREE.Vector3(1.58,0,0);break;
+			case 'bottom':this.newrotation = new THREE.Vector3(-1.58,0,0);break;
+			default: break;
+		}
+		this.newrotationmatrix.setRotationFromEuler(this.newrotation);
+		this.mesh.rotation.setRotationFromMatrix(this.newrotationmatrix);
+		this.view = 0;
+	}
 }
 
 viewController.prototype.onMouseDown = function (event) {
