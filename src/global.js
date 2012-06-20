@@ -30,6 +30,16 @@ var start_time;
 var fps;
 
 function web3dviewer_init() {
+	// Some browsers (like Safari) does not support bind. So we mimic its behaviour
+	if (typeof Function.prototype.bind !== 'function') {
+		Function.prototype.bind = function (bind) {
+		    var self = this;
+		    return function () {
+		        var args = Array.prototype.slice.call(arguments);
+		        return self.apply(bind || null, args);
+		    };
+		};
+	}
 
 	var components = document.getElementsByClassName("web3dviewer");
 	for (var i=0; i < components.length; i++) {
