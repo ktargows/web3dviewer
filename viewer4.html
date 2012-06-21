@@ -2,39 +2,25 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
 		<title>web3dviewer 4</title>
-		<style type="text/css"> 
-			body {
-				color: #808080;
-				font-family:Monospace;
-				font-size:13px;
-				/*text-align:center;*/
-
-				background-color: #ffffff;
-				/*margin: 0px;*/
-				/*overflow: hidden;*/
-			}
-
-			#info {
-				position: absolute;
-				top: 0px; width: 100%;
-				padding: 5px;
-			}
-			
-                </style>
-
 		<link rel="StyleSheet" type="text/css" href="css/bluecurve.css" />
 	</head>
 	<body onload="web3dviewer_init();">
-<h1>web3dviewer</h1>
-<p>Four independent components</p>
 
-<div class="web3dviewer" id="web3dviewer1" mesh="box" style="position: absolute; top: 100px; width: 150; height: 150px; "></div>
+<h3>web3dviewer, demo 4: four compoments</h3>
+<pre style="background-color: #dddddd;">
+&lt;body onload="web3dviewer_init();"&gt;
+&lt;script type="text/javascript" src="build/web3dviewer.js"&gt;&lt;/script&gt;
+<b>&lt;div class="web3dviewer" mesh="hinge"&gt;&lt;/div&gt;
+&lt;div class="web3dviewer" mesh="leg"&gt;&lt;/div&gt;</b>
+</pre>
 
-<div class="web3dviewer" id="web3dviewer2" mesh="leg" style="position: absolute; top: 100px; left: 220px; width: 200px; height: 200px; "></div>
+<div class="web3dviewer" id="web3dviewer1" mesh="arm" style="position: absolute; top: 100px; width: 150; height: 150px; "></div>
 
-<div class="web3dviewer" id="web3dviewer3" mesh="arm" style="position: absolute; top: 320px; width: 200px; height: 200px;"></div>
+<div class="web3dviewer" id="web3dviewer2" mesh="leg" noprogressive style="position: absolute; top: 100px; left: 220px; width: 200px; height: 200px; "></div>
 
-<div class="web3dviewer" id="web3dviewer4" mesh="box" progressive style="position: absolute; top: 320px; left: 220px; width: 300px; height: 300px;"></div>
+<div class="web3dviewer" id="web3dviewer3" mesh="box" noprogressive style="position: absolute; top: 320px; width: 200px; height: 200px;"></div>
+
+<div class="web3dviewer" id="web3dviewer4" mesh="box" noprogressive style="position: absolute; top: 320px; left: 220px; width: 300px; height: 300px;"></div>
 
 
 

@@ -2,63 +2,29 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
 		<title>web3dviewer 3</title>
-		<style type="text/css"> 
-			body {
-				color: #808080;
-				font-family:Monospace;
-				font-size:13px;
-				text-align:center;
-
-				background-color: #ffffff;
-				margin: 0px;
-				overflow: hidden;
-			}
-
-			#info {
-				position: absolute;
-				top: 0px; width: 100%;
-				padding: 5px;
-			}
-			
-			#panel {
-				position: absolute;
-				top: 50px;
-			}
-			
-			#slider-vertical {
-				height: 180px;
-			}
-                </style>
-
 		<link rel="StyleSheet" type="text/css" href="css/bluecurve.css" />
 	</head>
 	<body>
-<body>
-	<div id="panel">
-	<table>	
-		<tr>
-			<td><div class="slider" id="slider-vertical" tabIndex="1">
-				<input class="slider-input" id="slider-vertical-input" name="slider-vertical-input" />
-			</div></td>
-			<td><table><tr>
-					<td></td>
-					<td><button onclick="moveCamera('up'); return false;">&uarr;</button></td>
-					<td></td>
-					</tr><tr>
-					<td><button onclick="moveCamera('left'); return false;">&larr;</button></td>
-					<td></td>
-					<td><button onclick="moveCamera('right'); return false;">&rarr;</button></td>
-					</tr><tr>
-					<td></td>
-					<td><button onclick="moveCamera('down'); return false;">&darr;</button></td>
-					</td></td>
-					</tr>	
-				</table>
-		<button onclick="Home(); return false;">Home View</button><br />
-		<button onclick="Inertia(); return false;">Trigger Inertia</button><br />
-		</td></tr>
-	</table>
-	</div>
-	<script type="text/javascript" src="build/web3dviewer.js"></script>
+<body onload="web3dviewer_init();">
+<h3>web3dviewer, demo 3: two compoments</h3>
+<pre style="background-color: #dddddd;">
+&lt;body onload="web3dviewer_init();"&gt;
+&lt;script type="text/javascript" src="build/web3dviewer.js"&gt;&lt;/script&gt;
+<b>&lt;div class="web3dviewer" mesh="hinge"&gt;&lt;/div&gt;
+&lt;div class="web3dviewer" mesh="leg"&gt;&lt;/div&gt;</b>
+</pre>
+<div class="web3dviewer" mesh="hinge" style="position: absolute; top: 120px; width: 400px; height: 400px; "></div>
+<div class="web3dviewer" mesh="leg" noprogressive style="position: absolute; top: 120px; left: 450px; width: 400px; height: 400px; "></div>
+
+<script type="text/javascript" src="src/libs/Three.js"></script>
+<script type="text/javascript" src="src/libs/range.js"></script>
+<script type="text/javascript" src="src/libs/Stats.js"></script>
+<script type="text/javascript" src="src/libs/RequestAnimationFrame.js"></script>
+<script type="text/javascript" src="src/libs/slider.js"></script>
+<script type="text/javascript" src="src/libs/timer.js"></script>
+<script type="text/javascript" src="src/ooviewController.js"></script>
+<script type="text/javascript" src="src/loadBaseMesh.js"></script>
+<script type="text/javascript" src="src/refineMesh.js"></script>
+<script type="text/javascript" src="src/global.js"></script>
 	</body>
 </html>

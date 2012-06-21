@@ -62,7 +62,7 @@ function web3dviewer_init() {
 			vc_byid[master].children.push(id);
 		}
 
-		vc.progressive = (element.getAttribute("progressive") != null);
+		vc.progressive = !(element.getAttribute("noprogressive") != null);
 		vc.noinertia = (element.getAttribute("noinertia") != null);
 		vc.noinertia = (element.getAttribute("noinertia") != null);
 		vc.view  = element.getAttribute("view");
