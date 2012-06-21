@@ -7,6 +7,7 @@ viewController = function(id, mesh_name, master) {
   this.progressive = true;
   this.noinertia = false;
   this.view = "front";
+  this.viewtmp = "front";
   this.mouseDownX = 0; 
   this.mouseDownY = 0;
   this.windowHalfX = window.innerWidth/2;
@@ -24,7 +25,6 @@ viewController = function(id, mesh_name, master) {
   this.slowRotationY = 0;
   this.home = false;
   this.maxDimension = 0;
-  this.CAMERA_MOVE = 5;
   this.width = 300;
   this.height = 300;
 
@@ -124,6 +124,7 @@ viewController.prototype.initMesh = function () {
 	if(this.master){
 //	if(0){
 		this.mesh.geometry = vc_byid[this.master].mesh.geometry;
+		
 	} else {
 		this.loadBaseMesh(this.mesh_name, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
 	}
@@ -210,7 +211,7 @@ viewController.prototype.initView = function () {
 			this.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
 			this.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
 		}
-
+		this.viewtmp = this.view;
 }
 
 viewController.prototype.render = function () {
@@ -242,21 +243,20 @@ viewController.prototype.rotateMesh = function () {
 		this.home = false;
 	}
 	
-	if(this.view)
+	if(this.viewtmp)
 	{
 		this.newrotationmatrix = new THREE.Matrix4();
 		switch(this.view) {
 			case 'front': this.newrotation = new THREE.Vector3(0,0,0); break;
-			case 'left': this.newrotation = new THREE.Vector3(0,-1.57079633,0);break;
-			case 'right':this.newrotation = new THREE.Vector3(0,1.57079633,0); break;
-			case 'top':this.newrotation = new THREE.Vector3(1.57079633,0,0);break;
-			case 'bottom':this.newrotation = new THREE.Vector3(-1.57079633,0,0);break;
-			case 'back':this.newrotation = new THREE.Vector3(0, 3.1415926535, 0); break;
+			case 'left': this.newrotation = new THREE.Vector3(0,-1.571,0);break;
+			case 'right':this.newrotation = new THREE.Vector3(0,1.571,0); break;
+			case 'top':this.newrotation = new THREE.Vector3(1.571,0,0);break;
+			case 'bottom':this.newrotation = new THREE.Vector3(-1.571,0,0);break;
 			default: break;
 		}
 		this.newrotationmatrix.setRotationFromEuler(this.newrotation);
 		this.mesh.rotation.setRotationFromMatrix(this.newrotationmatrix);
-		this.view = 0;
+		this.viewtmp = 0;
 	}
 }
 
@@ -329,8 +329,8 @@ viewController.prototype.onMouseMove = function (event) {
 		}
 	}
 	else if(event.which == 3) {
-		vc.camera.position.x -= (vc.mouseX - vc.mouseDownX)*0.2;
-		vc.camera.position.y += (vc.mouseY - vc.mouseDownY)*0.2;
+		vc.camera.position.x -= (vc.mouseX - vc.mouseDownX)*(vc.maxDimension/vc.windowHalfX);
+		vc.camera.position.y += (vc.mouseY - vc.mouseDownY)*(vc.maxDimension/vc.windowHalfX);
 		vc.mouseDownX = vc.mouseX;
 		vc.mouseDownY = vc.mouseY;
 	}
@@ -394,13 +394,14 @@ viewController.prototype.onMouseScroll = function (event) {
 	event.preventDefault();
 	
 	vc.wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
-	vc.vslider.setValue(vc.vslider.getValue() + (vc.wheelData > 0 ? 0.05 : -0.05) * (vc.vslider.getMaximum() - vc.vslider.getMinimum()));
+	var step = (vc.maxDimension/vc.windowHalfX)*100;
+
+	vc.vslider.setValue(vc.vslider.getValue() + (vc.wheelData > 0 ? step : -step) );
 
 }
 
 
 viewController.prototype.onSliderChange = function (event) {
-	
 	this.camera.position.z = this.maxDimension*2 - this.vslider.getValue();
 
 }
@@ -491,18 +492,26 @@ viewController.prototype.Home = function() {
 	vc.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
 	vc.home = true;
 
+	if(vc.view){ 
+		vc.viewtmp = vc.view;
+	}
+
+	vc.updateChildren(vc, function(child, master) {
+		child.viewtmp = child.view;
+	}.bind(vc));
 }
 
 
 viewController.prototype.moveCamera = function(direction) {
 
 	var vc = vc_byid[this.parentNode.id];
+
 	switch(this.direction) {
 		
-		case "up": vc.camera.position.y -= vc.CAMERA_MOVE; break;
-		case "down": vc.camera.position.y += vc.CAMERA_MOVE; break;
-		case "left": vc.camera.position.x += vc.CAMERA_MOVE; break;
-		case "right": vc.camera.position.x -= vc.CAMERA_MOVE; break;
+		case "up": vc.camera.position.y -= (vc.maxDimension/10); break;
+		case "down": vc.camera.position.y += (vc.maxDimension/10); break;
+		case "left": vc.camera.position.x += (vc.maxDimension/10); break;
+		case "right": vc.camera.position.x -= (vc.maxDimension/10); break;
 		default: break;
 	}
 }

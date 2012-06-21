@@ -2,33 +2,21 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
 		<title>web3dviewer 6</title>
-		<style type="text/css"> 
-			body {
-				color: #808080;
-				font-family:Monospace;
-				font-size:13px;
-				/*text-align:center;*/
-
-				background-color: #ffffff;
-				/*margin: 0px;*/
-				/*overflow: hidden;*/
-			}
-
-			#info {
-				position: absolute;
-				top: 0px; width: 100%;
-				padding: 5px;
-			}
-                </style>
 
 		<link rel="StyleSheet" type="text/css" href="css/bluecurve.css" />
 	</head>
 	<body onload="web3dviewer_init();">
-<h1>web3dviewer</h1>
-<p>One object, two connected components.</p>
+<h3>web3dviewer, demo 6: three connected compoments</h3>
+<pre style="background-color: #dddddd;">
+&lt;div class="web3dviewer" <b>id="master" mesh="arm" view="front"</b>&gt;&lt;/div&gt;</b>
+&lt;div class="web3dviewer" <b>master="master" view="top"</b>&gt;&lt;/div&gt;</b>
+&lt;div class="web3dviewer" <b>master="master" view="left"</b>&gt;&lt;/div&gt;</b>
+</pre>
 
-<div class="web3dviewer" id="master0" mesh="head" view="front" noprogressive noinertia style="position: absolute; top: 100px; width: 400px; height: 500px; "></div>
-<div class="web3dviewer" mesh="head" master="master0" view="top" noprogressive noinertia style="position: absolute; left: 500px; top: 100px; width: 400px; height: 500px; "></div>
+<div class="web3dviewer" id="master" mesh="head" view="bottom" noinertia style="position: absolute; top: 100px; width: 300px; height: 300px; "></div>
+<div class="web3dviewer" master="master" view="right" noinertia style="position: absolute; left: 330px; top: 100px; width: 300px; height: 300px; "></div>
+<div class="web3dviewer" master="master" view="back" noinertia style="position: absolute; top: 420px; width: 300px; height: 300px; "></div>
+
 
 <script type="text/javascript" src="src/libs/Three.js"></script>
 <script type="text/javascript" src="src/libs/range.js"></script>
