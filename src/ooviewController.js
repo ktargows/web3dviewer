@@ -119,8 +119,8 @@ viewController.prototype.loadMeshError = function() {
 viewController.prototype.initMesh = function () {
 	this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
 	
-//	if(this.master){
-	if(0){
+	if(this.master){
+//	if(0){
 		this.mesh.geometry = vc_byid[this.master].mesh.geometry;
 	} else {
 		this.loadBaseMesh(this.mesh_name, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));

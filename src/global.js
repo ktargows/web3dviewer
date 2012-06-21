@@ -64,7 +64,6 @@ function web3dviewer_init() {
 
 		vc.progressive = !(element.getAttribute("noprogressive") != null);
 		vc.noinertia = (element.getAttribute("noinertia") != null);
-		vc.noinertia = (element.getAttribute("noinertia") != null);
 		vc.view  = element.getAttribute("view");
 
 		vc.width = parseInt(element.style.width);
