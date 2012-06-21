@@ -105,9 +105,11 @@ viewController.prototype.loadMeshSuccess = function() {
 	console.info("Mesh loaded " + this.mesh.geometry.vertices.length + " vertices");
 	console.info("" + this.id + " is progressive? " + this.progressive);
 	
-	this.updateMesh();
-	this.centerMesh();
-	this.initView();
+	this.updateChildren(this, function(child, master) {
+		child.updateMesh();
+		child.centerMesh();
+		child.initView();
+	}.bind(this));
 	if (this.progressive)
 		this.initProgressive();
 }
@@ -192,7 +194,7 @@ viewController.prototype.createPanel = function () {
 }
 
 viewController.prototype.initView = function () {
-		
+		console.info("Initiated view (" + this.id + ")");
 		this.mesh.doubleSided = false;
 		this.mesh.geometry.computeBoundingBox();
 		var box = this.mesh.geometry.boundingBox;
@@ -332,6 +334,21 @@ viewController.prototype.onMouseMove = function (event) {
 		vc.mouseDownY = vc.mouseY;
 	}
 
+}
+
+viewController.prototype.updateChildren = function (vc, action) {
+        //console.info("Updating children for " + vc.id + " with " + vc.children.length + " children");
+	if (vc.master) {
+		vc_master = vc_byid[vc.master];
+	} else {
+		vc_master = vc;
+	}
+
+	var children = vc_master.children.concat([vc_master.id]);
+	for (var i in children) {
+		var vc_child = vc_byid[children[i]];
+		action(vc_child, vc);
+	}
 }
 
 viewController.prototype.updateChildrenRotation = function (vc) {

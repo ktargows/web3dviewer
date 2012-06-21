@@ -11,7 +11,7 @@ viewController.prototype.refine = function() {
 	while (this.splits.length > 0) {
 		//console.debug(""+splits.length+" splits left");
 		var split = this.splits.pop();
-		console.info("Split nr " + split.a + ", " + split.b + " vc " + this.id);
+		//console.debug("Split nr " + split.a + ", " + split.b + " vc " + this.id);
 		var fail = this.splitNode(split.a, split.b, split.c0, split.c1, split.d,
 			  split.cfg0, split.cfg1, split.x, split.y, split.z);
 		if (fail) {
