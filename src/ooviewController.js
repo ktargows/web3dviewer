@@ -247,10 +247,11 @@ viewController.prototype.rotateMesh = function () {
 		this.newrotationmatrix = new THREE.Matrix4();
 		switch(this.view) {
 			case 'front': this.newrotation = new THREE.Vector3(0,0,0); break;
-			case 'left': this.newrotation = new THREE.Vector3(0,-1.58,0);break;
-			case 'right':this.newrotation = new THREE.Vector3(0,1.58,0); break;
-			case 'top':this.newrotation = new THREE.Vector3(1.58,0,0);break;
-			case 'bottom':this.newrotation = new THREE.Vector3(-1.58,0,0);break;
+			case 'left': this.newrotation = new THREE.Vector3(0,-1.57079633,0);break;
+			case 'right':this.newrotation = new THREE.Vector3(0,1.57079633,0); break;
+			case 'top':this.newrotation = new THREE.Vector3(1.57079633,0,0);break;
+			case 'bottom':this.newrotation = new THREE.Vector3(-1.57079633,0,0);break;
+			case 'back':this.newrotation = new THREE.Vector3(0, 3.1415926535, 0); break;
 			default: break;
 		}
 		this.newrotationmatrix.setRotationFromEuler(this.newrotation);
