@@ -191,7 +191,7 @@ viewController.prototype.createPanel = function () {
 
 	this.info_msg = document.createElement( 'span' );
 	this.info_msg.innerHTML="";
-	this.info_msg.style.cssText = 'font-size: 80%; color:#303030; position: absolute; left: 80%; top:'+ (this.height-20) +'px; z-index: 10;';
+	this.info_msg.style.cssText = 'font-size: 80%; color:#303030; position: absolute; right: 0px; bottom: 0px; z-index: 10;';
 	document.getElementById(this.id).appendChild(this.info_msg);
 	
 	
