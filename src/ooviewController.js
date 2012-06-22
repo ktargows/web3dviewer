@@ -27,6 +27,11 @@ viewController = function(id, mesh_name, master) {
   this.maxDimension = 0;
   this.width = 300;
   this.height = 300;
+  this.view_angle = 60,
+  this.near = 0.1,
+  this.far = 200,
+  this.info_msg;
+
 
 }
 
@@ -39,10 +44,10 @@ viewController.prototype.init = function () {
 	this.renderer.clear();
 	
 	this.camera = new THREE.PerspectiveCamera(
-			   VIEW_ANGLE,
+			   this.view_angle,
 			   this.width/this.height,
-			   NEAR,
-			   FAR );
+			   this.near,
+			   this.far );
 	
 /*	this.stats = new Stats();
 	this.stats.domElement.style.position = 'absolute';
@@ -122,9 +127,7 @@ viewController.prototype.initMesh = function () {
 	this.mesh = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading}));
 	
 	if(this.master){
-//	if(0){
 		this.mesh.geometry = vc_byid[this.master].mesh.geometry;
-		
 	} else {
 		this.loadBaseMesh(this.mesh_name, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
 	}
@@ -147,51 +150,51 @@ viewController.prototype.createPanel = function () {
 	divsliderinput.id = "slider-vertical-input-"+this.id;
 	divsliderinput.className = "slider-input";
 	divslider.appendChild(divsliderinput);
+	container.appendChild(divslider);
+	this.vslider = new Slider(divslider, divsliderinput, "vertical");
+	this.vslider.onchange = this.onSliderChange.bind(this);
+	document.getElementById(this.id).appendChild( container );
 	
 	var arrbutton;
 	arrbutton = document.createElement('button');
 	arrbutton.onclick = this.moveCamera;
 	arrbutton.direction = 'up';
 	arrbutton.innerHTML = "&uarr;";
-	arrbutton.style.cssText='z-index: 10; position: absolute; top: 0px; left: 45%';
+	arrbutton.style.cssText='z-index: 10; position: absolute; top: 0px; left: 45%; width: 50px;';
 	document.getElementById(this.id).appendChild(arrbutton); 
 	
 	arrbutton = document.createElement('button');
 	arrbutton.onclick = this.moveCamera;
 	arrbutton.direction = 'down';
 	arrbutton.innerHTML = "&darr;";
-	arrbutton.style.cssText='z-index: 10; position: absolute; bottom: 0px; left: 45%';
+	arrbutton.style.cssText='z-index: 10; position: absolute; bottom: 0px; left: 45%; width: 50px;';
 	document.getElementById(this.id).appendChild(arrbutton);
 	arrbutton = document.createElement('button');
 	arrbutton.onclick = this.moveCamera;
 	arrbutton.direction = 'left';
 	arrbutton.innerHTML = "&larr;";
-	arrbutton.style.cssText='z-index: 10; position: absolute; left: 30px; top: 45%';
+	arrbutton.style.cssText='z-index: 10; position: absolute; left: 30px; top: 45%; height: 50px;';
 	document.getElementById(this.id).appendChild(arrbutton);
 	
 	arrbutton = document.createElement('button');
 	arrbutton.onclick = this.moveCamera;
 	arrbutton.direction = 'right';
 	arrbutton.innerHTML = "&rarr;";
-	arrbutton.style.cssText='z-index: 10; position: absolute; top: 45%; right: 0px';
+	arrbutton.style.cssText='z-index: 10; position: absolute; top: 45%; right: 0px; height: 50px;';
 	document.getElementById(this.id).appendChild(arrbutton);
 	
 	var home_button = document.createElement( 'button' );
 	home_button.innerHTML="Reset view";
-	home_button.style.cssText = 'color:#000000; position: absolute; left: 70%; top: 0px; z-index: 10;';
+	home_button.style.cssText = 'color:#000000; position: absolute; top: 0px; right: 0px; z-index: 10;';
 	home_button.onclick = this.Home;
-
-	
-	container.appendChild(divslider);
 	document.getElementById(this.id).appendChild(home_button);
-	
-	this.vslider = new Slider(divslider, divsliderinput, "vertical");
-	this.vslider.onchange = this.onSliderChange.bind(this);
-	document.getElementById(this.id).appendChild( container );
-	
 
-//<button onclick="Home(); return false;">Reset view</button><br />
-
+	this.info_msg = document.createElement( 'span' );
+	this.info_msg.innerHTML="";
+	this.info_msg.style.cssText = 'font-size: 80%; color:#303030; position: absolute; left: 80%; top:'+ (this.height-20) +'px; z-index: 10;';
+	document.getElementById(this.id).appendChild(this.info_msg);
+	
+	
 }
 
 viewController.prototype.initView = function () {
@@ -219,6 +222,7 @@ viewController.prototype.render = function () {
 		this.rotateMesh();
 	}
 	this.renderer.render(this.scene, this.camera);
+	this.info_msg.innerHTML= this.mesh.geometry.faces.length+ " faces loaded";
 //	this.stats.update();
 }
 

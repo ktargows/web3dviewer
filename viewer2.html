@@ -8,12 +8,12 @@
 	</head>
 	<body onload="web3dviewer_init();">
 <h3>web3dviewer, demo 2: hinge</h3>
+Hinge model contains 9000 faces. Mesh loading will stop when renderer drops below 20 fps. <b>Test your device performance</b>.
 <pre style="background-color: #dddddd;">
-&lt;body onload="web3dviewer_init();"&gt;
-&lt;script type="text/javascript" src="build/web3dviewer.js"&gt;&lt;/script&gt;
 &lt;div class="web3dviewer" mesh="hinge" <b>noinertia</b>&gt;&lt;/div&gt;
 </pre>
-<div class="web3dviewer" mesh="hinge" progressive noinertia style="position: absolute; top: 120px; width: 600px; height: 500px; "></div>
+<div class="web3dviewer" mesh="hinge" noinertia style="position: absolute; top: 120px; width: 600px; height: 500px; "></div>
+
 <script type="text/javascript" src="src/libs/Three.js"></script>
 <script type="text/javascript" src="src/libs/range.js"></script>
 <script type="text/javascript" src="src/libs/Stats.js"></script>
