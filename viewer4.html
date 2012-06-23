@@ -6,19 +6,22 @@
 	</head>
 	<body onload="web3dviewer_init();">
 
-<h3>web3dviewer, demo 4: four compoments</h3>
+<h3>web3dviewer, demo 4: four components</h3>
+
 <pre style="background-color: #dddddd;">
-<b>&lt;div class="web3dviewer" mesh="hinge"&gt;&lt;/div&gt;
-&lt;div class="web3dviewer" mesh="leg"&gt;&lt;/div&gt;</b>
+&lt;div class="web3dviewer" mesh="hinge"&gt;&lt;/div&gt; &lt;div class="web3dviewer" mesh="leg"&gt;&lt;/div&gt;
+&lt;div class="web3dviewer" mesh="box"&gt;&lt;/div&gt; &lt;div class="web3dviewer" mesh="head"&gt;&lt;/div&gt;
 </pre>
 
-<div class="web3dviewer" id="web3dviewer1" mesh="arm" style="position: absolute; top: 100px; width: 150; height: 150px; "></div>
+Size and position of components controlled by CSS properties.
 
-<div class="web3dviewer" id="web3dviewer2" mesh="leg" noprogressive style="position: absolute; top: 100px; left: 220px; width: 200px; height: 200px; "></div>
+<div class="web3dviewer" mesh="hinge" style="position: absolute; top: 120px; width: 500; height: 300px; "></div>
 
-<div class="web3dviewer" id="web3dviewer3" mesh="box" noprogressive style="position: absolute; top: 320px; width: 200px; height: 200px;"></div>
+<div class="web3dviewer" mesh="leg" noprogressive style="position: absolute; top: 120px; left: 530px; width: 350px; height: 300px; "></div>
 
-<div class="web3dviewer" id="web3dviewer4" mesh="box" noprogressive style="position: absolute; top: 320px; left: 220px; width: 300px; height: 300px;"></div>
+<div class="web3dviewer" mesh="box" noprogressive style="position: absolute; top: 440px; width: 400px; height: 200px;"></div>
+
+<div class="web3dviewer" mesh="head" noprogressive style="position: absolute; top: 440px; left: 430px; width: 450px; height: 200px;"></div>
 
 
 

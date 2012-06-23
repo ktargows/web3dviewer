@@ -12,13 +12,13 @@
 
 <h3>web3dviewer, demo 5: connected compoments</h3>
 <pre style="background-color: #dddddd;">
-&lt;div class="web3dviewer" <b>id="master" mesh="arm"</b>>&gt;&lt;/div&gt;</b>
-&lt;div class="web3dviewer" <b>master="master"</b>&gt;&lt;/div&gt;</b>
+&lt;div class="web3dviewer" <b>id="main" mesh="arm"</b>>&gt;&lt;/div&gt;</b>
+&lt;div class="web3dviewer" <b>master="main"</b>&gt;&lt;/div&gt;</b>
 </pre>
 
 
 <div class="web3dviewer" id="master0" mesh="arm" noinertia style="position: absolute; top: 100px; width: 400px; height: 500px; "></div>
-<div class="web3dviewer" master="master0" noprogressive noinertia style="position: absolute; left: 500px; top: 100px; width: 400px; height: 500px; "></div>
+<div class="web3dviewer" master="master0" noinertia style="position: absolute; left: 500px; top: 100px; width: 400px; height: 500px; "></div>
 
 <script type="text/javascript" src="src/libs/Three.js"></script>
 <script type="text/javascript" src="src/libs/range.js"></script>

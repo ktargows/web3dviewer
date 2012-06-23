@@ -222,7 +222,11 @@ viewController.prototype.render = function () {
 		this.rotateMesh();
 	}
 	this.renderer.render(this.scene, this.camera);
-	this.info_msg.innerHTML= this.mesh.geometry.faces.length+ " faces loaded";
+	if( this.progressive ) {
+		this.info_msg.innerHTML= "loading... "+ this.mesh.geometry.faces.length+ " faces";
+	} else {
+		this.info_msg.innerHTML= this.mesh.geometry.faces.length+ " faces";
+	}
 //	this.stats.update();
 }
 
