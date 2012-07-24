@@ -6,8 +6,12 @@ if (isset($_REQUEST['mesh']) == false)
 	$mesh = "leg";
 else
 	$mesh = $_REQUEST['mesh'];
+if (isset($_REQUEST['ext']) == false)
+	$ext = "grid";
+else
+	$ext = $_REQUEST['ext'];
 #$lines = file("meshes/leg-surface.pgrid");
-$lines = file("meshes/$mesh.pgrid");
+$lines = file("meshes/$mesh.$ext");
 
 $lv = preg_grep( "/\[\d+\]/", $lines);
 $lf = preg_grep( "/ElmT3n2D/", $lines);

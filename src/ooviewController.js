@@ -129,7 +129,9 @@ viewController.prototype.initMesh = function () {
 	if(this.master){
 		this.mesh.geometry = vc_byid[this.master].mesh.geometry;
 	} else {
-		this.loadBaseMesh(this.mesh_name, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
+		var ext = "grid";
+		if (this.progressive) ext = "pgrid";
+		this.loadBaseMesh(this.mesh_name, ext, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
 	}
 } 
 

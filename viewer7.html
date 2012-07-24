@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
+		<title>web3dviewer 2</title>
+
+                <link rel="StyleSheet" type="text/css" href="css/bluecurve.css" />
+	</head>
+	<body onload="web3dviewer_init();">
+<h3>web3dviewer, demo 7: hinge without progressive loading</h3>
+Hinge model contains 9000 faces.
+<pre style="background-color: #dddddd;">
+&lt;div class="web3dviewer" mesh="hinge" <b>noinertia</b>&gt;&lt;/div&gt;
+</pre>
+<div class="web3dviewer" mesh="hinge" noprogressive noinertia style="position: absolute; top: 120px; width: 600px; height: 500px; "></div>
+
+<script type="text/javascript" src="src/libs/Three.js"></script>
+<script type="text/javascript" src="src/libs/range.js"></script>
+<script type="text/javascript" src="src/libs/Stats.js"></script>
+<script type="text/javascript" src="src/libs/RequestAnimationFrame.js"></script>
+<script type="text/javascript" src="src/libs/slider.js"></script>
+<script type="text/javascript" src="src/libs/timer.js"></script>
+<script type="text/javascript" src="src/ooviewController.js"></script>
+<script type="text/javascript" src="src/loadBaseMesh.js"></script>
+<script type="text/javascript" src="src/refineMesh.js"></script>
+<script type="text/javascript" src="src/global.js"></script>
+	</body>
+</html>
