@@ -1,3 +1,8 @@
-wireshark-{heavy,low}-vnc: 2min. session of vnc showing browser window with viewer7.html example during heavy/low user interaction.
-wireshark-compressed-{heavy,low}-vnc: 2min. session of vnc sending compressed (JPEG) data. Beside this it's the same as wireshark-{heavy,low}-vnc
+wireshark-{heavy,low}-vnc: 2min. session of vnc showing browser window with viewer7.html example during heavy/low user interaction. 1024x768
+wireshark-compressed-{heavy,low}-vnc: 2min. session of vnc sending compressed (JPEG) data. Beside this it's the same as wireshark-{heavy,low}-vnc.
 wireshark-progressive: 2min. session of heavy object interaction with progressive mesh. Model loaded fully in 2min.
+wireshark-small-{heavy,low}-vnc: 2min. session of vnc sending small (640x480) image of web3dviewer component.
+
+VNC was tested on gaus which was connected to goope/~bach/web3dviewer
+PM was tested on jan which was also connected to goope/~bach/web3dviewer
+PM sent almost half of full-mesh size in diffpack format because of JSON message format. JSON is more compacted format.
