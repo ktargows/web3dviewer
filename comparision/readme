@@ -1,0 +1,3 @@
+wireshark-{heavy,low}-vnc: 2min. session of vnc showing browser window with viewer7.html example during heavy/low user interaction.
+wireshark-compressed-{heavy,low}-vnc: 2min. session of vnc sending compressed (JPEG) data. Beside this it's the same as wireshark-{heavy,low}-vnc
+wireshark-progressive: 2min. session of heavy object interaction with progressive mesh. Model loaded fully in 2min.
