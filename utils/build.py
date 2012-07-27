@@ -15,7 +15,7 @@ COMMON_FILES = [
 'libs/Three.js',
 'libs/range.js',
 'libs/RequestAnimationFrame.js',
-'libs/slider.js',
+#'libs/slider.js',
 'libs/Stats.js',
 'libs/timer.js',
 'ooviewController.js',

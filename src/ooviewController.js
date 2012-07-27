@@ -142,20 +142,20 @@ viewController.prototype.createPanel = function () {
 	container.className = "panel";
 	container.style.cssText = 'z-index: 10; top: 0px; float: left; position: relative;';
 	
-	var divslider = document.createElement('div');
-	var divsliderinput = document.createElement('input');
+//	var divslider = document.createElement('div');
+//	var divsliderinput = document.createElement('input');
 	
-	divslider.className = "slider";
-	divslider.id = "slider-vertical-"+this.id;
-	divslider.style.height = document.getElementById(this.id).style.height;
+//	divslider.className = "slider";
+//	divslider.id = "slider-vertical-"+this.id;
+//	divslider.style.height = document.getElementById(this.id).style.height;
 
-	divsliderinput.id = "slider-vertical-input-"+this.id;
-	divsliderinput.className = "slider-input";
-	divslider.appendChild(divsliderinput);
-	container.appendChild(divslider);
-	this.vslider = new Slider(divslider, divsliderinput, "vertical");
-	this.vslider.onchange = this.onSliderChange.bind(this);
-	document.getElementById(this.id).appendChild( container );
+//	divsliderinput.id = "slider-vertical-input-"+this.id;
+//	divsliderinput.className = "slider-input";
+//	divslider.appendChild(divsliderinput);
+//	container.appendChild(divslider);
+//	this.vslider = new Slider(divslider, divsliderinput, "vertical");
+//	this.vslider.onchange = this.onSliderChange.bind(this);
+//	document.getElementById(this.id).appendChild( container );
 	
 	var arrbutton;
 	arrbutton = document.createElement('button');
@@ -191,6 +191,20 @@ viewController.prototype.createPanel = function () {
 	home_button.onclick = this.Home;
 	document.getElementById(this.id).appendChild(home_button);
 
+	var zoom_button = document.createElement( 'button' );
+	zoom_button.innerHTML="+";
+	zoom_button.style.cssText = 'color:#000000; position: absolute; top: 10px; left: 20px; width: 50px; font-size: large; z-index: 10;';
+	zoom_button.onclick = this.moveCamera;
+	zoom_button.direction = "in";
+	document.getElementById(this.id).appendChild(zoom_button);
+
+	var zoom_button = document.createElement( 'button' );
+	zoom_button.innerHTML="-";
+	zoom_button.style.cssText = 'color:#000000; position: absolute; top: 50px; left: 20px; width: 50px; font-size: large; z-index: 10;';
+	zoom_button.onclick = this.moveCamera;
+	zoom_button.direction = "out";
+	document.getElementById(this.id).appendChild(zoom_button);
+
 	this.info_msg = document.createElement( 'span' );
 	this.info_msg.innerHTML="";
 	this.info_msg.style.cssText = 'font-size: 80%; color:#303030; position: absolute; right: 0px; bottom: 0px; z-index: 10;';
@@ -207,11 +221,11 @@ viewController.prototype.initView = function () {
 		if(box) {
 			this.maxDimension = Math.max(box.x[1]-box.x[0], box.y[1]-box.y[0]);
 			this.maxDimension = Math.ceil(Math.max(this.maxDimension, box.z[1]-box.z[0]));
-			if(this.vslider) {
-				this.vslider.setMinimum(-1*this.maxDimension); 
-				this.vslider.setMaximum(this.maxDimension*1.5);
-				this.vslider.setValue(this.maxDimension*0.25);
-			}
+//			if(this.vslider) {
+//				this.vslider.setMinimum(-1*this.maxDimension); 
+//				this.vslider.setMaximum(this.maxDimension*1.5);
+//				this.vslider.setValue(this.maxDimension*0.25);
+//			}
 			this.camera.position.z = this.light.position.z = this.maxDimension*2;
 			this.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
 			this.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
@@ -406,15 +420,15 @@ viewController.prototype.onMouseScroll = function (event) {
 	vc.wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
 	var step = (vc.maxDimension/vc.windowHalfX)*100;
 
-	vc.vslider.setValue(vc.vslider.getValue() + (vc.wheelData > 0 ? step : -step) );
-
+	// vc.vslider.setValue(vc.vslider.getValue() + (vc.wheelData > 0 ? step : -step) );
+	this.camera.position.z += vc.wheelData > 0 ? step : -step;
 }
 
 
-viewController.prototype.onSliderChange = function (event) {
-	this.camera.position.z = this.maxDimension*2 - this.vslider.getValue();
-
-}
+//viewController.prototype.onSliderChange = function (event) {
+//	this.camera.position.z = this.maxDimension*2 - this.vslider.getValue();
+//
+//}
 
 
 
@@ -431,7 +445,14 @@ viewController.prototype.onTouchStart = function (event) {
 		vc.mouseDownRotationX = vc.targetRotationX;
 		vc.mouseDownRotationY = vc.targetRotationY;
 	}
-
+	if(event.touches.length == 2) {
+		var tmpX = event.touches[0].pageX - event.touches[1].pageX;
+		var tmpY = event.touches[0].pageY - event.touches[1].pageY;
+		vc.touchStartDistance = Math.sqrt(tmpX*tmpX + tmpY*tmpY);
+		vc.touchStartZ = vc.camera.position.z;
+		vc.touchStartX = (event.touches[0].pageX + event.touches[1].pageX)/2;
+		vc.touchStartY = (event.touches[0].pageY + event.touches[1].pageY)/2;
+	}
 }
 
 
@@ -439,13 +460,31 @@ viewController.prototype.onTouchMove = function (event) {
 	
 	var vc = this;
 	event = event ? event: document.event;
-	
 	event.preventDefault();
+
 	if(event.touches.length == 1) {
 		vc.mouseX = event.touches[0].pageX - vc.windowHalfX;
 		vc.mouseY = event.touches[0].pageY - vc.windowHalfY;
 		vc.targetRotationX = vc.mouseDownRotationX + (vc.mouseX - vc.mouseDownX)*0.05;
 		vc.targetRotationY = vc.mouseDownRotationY + (vc.mouseY - vc.mouseDownY)*0.05;
+	}
+	if(event.touches.length == 2) {
+		var tmpX = event.touches[0].pageX - event.touches[1].pageX;
+		var tmpY = event.touches[0].pageY - event.touches[1].pageY;
+		var distance = Math.sqrt(tmpX*tmpX + tmpY*tmpY);
+//		var step = (vc.maxDimension/vc.windowHalfX)*100;
+//		vc.vslider.setValue(vc.vslider.getValue() + (vc.wheelData > 0 ? step : -step) );
+		
+		var scale = vc.maxDimension/vc.windowHalfX;
+		vc.camera.position.z = vc.touchStartZ - (distance - vc.touchStartDistance) * scale;
+//		vc.camera.position.z = this.maxDimension*2 - this.vslider.getValue();
+
+		var touchX = (event.touches[0].pageX + event.touches[1].pageX)/2;;
+		var touchY = (event.touches[0].pageY + event.touches[1].pageY)/2;
+		vc.camera.position.x -= (touchX - vc.touchStartX)*scale;
+		vc.camera.position.y += (touchY - vc.touchStartY)*scale;
+		vc.touchStartX = touchX;
+		vc.touchStartY = touchY;
 	}
 	
 }
@@ -495,11 +534,13 @@ viewController.prototype.Home = function() {
 	var vc = vc_byid[this.parentNode.id];
 	vc.targetRotationX = vc.targetRotationY = vc.mouseDownRotationX = vc.mouseDownRotationY = vc.mouseDownX = vc.mouseDownY = vc.mouseX = vc.mouseY = vc.slowRotationX = vc.slowRotationY = 0;
 	vc.mesh.rotation.setRotationFromMatrix(new THREE.Matrix4());
-	vc.vslider.setValue(vc.maxDimension*0.25);
+//	vc.vslider.setValue(vc.maxDimension*0.25);
 	vc.mesh.geometry.computeBoundingBox();
 	var box = vc.mesh.geometry.boundingBox;
 	vc.camera.position.x = box.x[0] + (box.x[1]-box.x[0])/2;
 	vc.camera.position.y = box.y[0] + (box.y[1]-box.y[0])/2;
+	vc.camera.position.z = vc.maxDimension*2;
+
 	vc.home = true;
 
 	if(vc.view){ 
@@ -522,6 +563,9 @@ viewController.prototype.moveCamera = function(direction) {
 		case "down": vc.camera.position.y += (vc.maxDimension/10); break;
 		case "left": vc.camera.position.x += (vc.maxDimension/10); break;
 		case "right": vc.camera.position.x -= (vc.maxDimension/10); break;
+		case "in": vc.camera.position.z -= (vc.maxDimension/5); break;
+		case "out": vc.camera.position.z += (vc.maxDimension/5); break;
+
 		default: break;
 	}
 }
