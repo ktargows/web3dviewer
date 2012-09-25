@@ -174,8 +174,11 @@ def parse_args():
 #				buildIncludes(files, fname_inc)
 
 def main():
-	buildLib(COMMON_FILES, False, False, 'web3dviewer', False)
 
+	debug = False
+	minified = True
+	fname_externs = ''
+	buildLib(COMMON_FILES, debug, minified, 'web3dviewer', fname_externs)
 
 if __name__ == "__main__":
 	main()
