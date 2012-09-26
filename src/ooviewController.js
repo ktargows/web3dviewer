@@ -91,7 +91,7 @@ viewController.prototype.centerMesh = function() {
 	var offset_x = (vc.mesh.geometry.boundingBox.x[0]+vc.mesh.geometry.boundingBox.x[1])/2; 
 	var offset_y = (vc.mesh.geometry.boundingBox.y[0]+vc.mesh.geometry.boundingBox.y[1])/2; 
 	var offset_z = (vc.mesh.geometry.boundingBox.z[0]+vc.mesh.geometry.boundingBox.z[1])/2; 
-	for (i = 0; i< vc.mesh.geometry.vertices.length; i++ ){ 
+	for (var i = 0; i< vc.mesh.geometry.vertices.length; i++ ){ 
 		vc.mesh.geometry.vertices[i].position.x -= offset_x;
 		vc.mesh.geometry.vertices[i].position.y -= offset_y;
 		vc.mesh.geometry.vertices[i].position.z -= offset_z;
@@ -115,8 +115,9 @@ viewController.prototype.loadMeshSuccess = function() {
 		child.centerMesh();
 		child.initView();
 	}.bind(this));
-	if (this.progressive)
+	if (this.progressive) {
 		this.initProgressive();
+	}
 }
 
 viewController.prototype.loadMeshError = function() {
@@ -130,7 +131,9 @@ viewController.prototype.initMesh = function () {
 		this.mesh.geometry = vc_byid[this.master].mesh.geometry;
 	} else {
 		var ext = "grid";
-		if (this.progressive) ext = "pgrid";
+		if (this.progressive) {
+			ext = "pgrid";
+		}
 		this.loadBaseMesh(this.mesh_name, ext, this.loadMeshSuccess.bind(this), this.loadMeshError.bind(this));
 	}
 } 
@@ -255,9 +258,9 @@ viewController.prototype.rotateMesh = function () {
 	this.newrotationmatrix.multiplySelf(this.mesh.matrix);
 	this.mesh.rotation.setRotationFromMatrix(this.newrotationmatrix);
 
-	if(this.noinertia) 
+	if(this.noinertia)  {
 		this.targetRotationX = this.targetRotationY = 0;
-	else {
+	} else {
 		this.slowRotationX += (this.targetRotationX - this.slowRotationX)*0.02;
 		this.slowRotationY += (this.targetRotationY - this.slowRotationY)*0.02;
 	}
@@ -267,8 +270,7 @@ viewController.prototype.rotateMesh = function () {
 		this.home = false;
 	}
 	
-	if(this.viewtmp)
-	{
+	if(this.viewtmp) {
 		this.newrotationmatrix = new THREE.Matrix4();
 		switch(this.view) {
 			case 'front': this.newrotation = new THREE.Vector3(0,0,0); break;
@@ -296,11 +298,11 @@ viewController.prototype.onMouseDown = function (event) {
 	document.addEventListener('mousemove', vc.onMouseMove, false);
 
 	
-	if(event.pageX || event.pageY) {
+	if (event.pageX || event.pageY) {
 		vc.mouseDownX = event.pageX;
 		vc.mouseDownY = event.pageY;
 	}
-	else if(event.clientX || event.clientY) {
+	else if (event.clientX || event.clientY) {
 		vc.mouseDownX = event.clientX + document.body.scrollLeft;
 		vc.mouseDownY = event.clientY + document.body.scrollTop;
 	}
@@ -308,7 +310,7 @@ viewController.prototype.onMouseDown = function (event) {
 	vc.mouseDownY -= vc.windowHalfY;
 	vc.mouseDownX -= vc.windowHalfX;
 	
-	if(event.which == 1) {
+	if (event.which == 1) {
 		vc.mouseDownRotationX = vc.targetRotationX;
 		vc.mouseDownRotationY = vc.targetRotationY;
 	}
@@ -325,18 +327,18 @@ viewController.prototype.onMouseMove = function (event) {
 	event = event ? event : document.event;
 	event.preventDefault();
 	
-	if(event.pageX || event.pageY) {
+	if (event.pageX || event.pageY) {
 		vc.mouseX = event.pageX;
 		vc.mouseY = event.pageY;
 	}
-	else if(event.clientX || event.clientY) {
+	else if (event.clientX || event.clientY) {
 		vc.mouseX = event.clientX + document.body.scrollLeft;
 		vc.mouseY = event.clientY + document.body.scrollTop;
 	}
 	
 	vc.mouseX -= vc.windowHalfX;
 	vc.mouseY -= vc.windowHalfY;
-	if(event.which == 1) {
+	if (event.which == 1) {
 		if(vc.noinertia) {
 			vc.targetRotationX = (vc.mouseX - vc.mouseDownX)*0.2;
 			vc.targetRotationY = (vc.mouseY - vc.mouseDownY)*0.2;

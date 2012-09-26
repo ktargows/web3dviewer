@@ -13,10 +13,10 @@ viewController.prototype.loadBaseMesh = function (mesh, ext, onsuccess, onerror)
 				var json_data = http_request.responseText;
 				var json = JSON.parse(json_data); 
 				var i;
-				for (i = 0; i< json.vertices.length; i++ ){ 
+				for (var i = 0; i< json.vertices.length; i++ ){ 
 					vc.mesh.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3(json.vertices[i][0], json.vertices[i][1], json.vertices[i][2] )) );
 				}
-				for (i = 0; i< json.faces.length; i++ ){ 
+				for (var i = 0; i< json.faces.length; i++ ){ 
 					vc.mesh.geometry.faces.push( new THREE.Face3( json.faces[i][0], json.faces[i][1], json.faces[i][2] ) );
 				}
 	

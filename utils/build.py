@@ -18,10 +18,10 @@ COMMON_FILES = [
 #'libs/slider.js',
 'libs/Stats.js',
 'libs/timer.js',
+'global.js',
 'ooviewController.js',
 'refineMesh.js',
-'loadBaseMesh.js',
-'global.js'
+'loadBaseMesh.js'
 ]
 
 
@@ -56,7 +56,7 @@ def compress(text, fname_externs):
 
 #	os.system("java -jar compiler/compiler.jar --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs externs_common.js %s --language_in=ECMASCRIPT5_STRICT --js %s --js_output_file %s" % (externs, in_tuple[1], out_tuple[1]))
 
-	os.system("java -jar compiler/compiler.jar --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs externs_common.js %s --language_in=ECMASCRIPT3 --js %s --js_output_file %s" % (externs, in_tuple[1], out_tuple[1]))
+	os.system("java -jar compiler/compiler.jar --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs externs_common.js %s --language_in=ECMASCRIPT5 --js %s --js_output_file %s" % (externs, in_tuple[1], out_tuple[1]))
 
 	with os.fdopen(out_tuple[0], 'r') as handle:
 		compressed = handle.read()

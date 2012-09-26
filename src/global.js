@@ -26,6 +26,8 @@ function animate() {
 
 var vc_byid = [];
 var vc_table = [];
+var vc_master;
+var viewController;
 var start_time;
 var fps;
 
